@@ -1,4 +1,4 @@
-package ru.vsu.csf.group7.security;
+package ru.vsu.csf.group7.config;
 
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;

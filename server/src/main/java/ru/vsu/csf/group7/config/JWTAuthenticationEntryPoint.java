@@ -1,4 +1,4 @@
-package ru.vsu.csf.group7.security;
+package ru.vsu.csf.group7.config;
 
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;

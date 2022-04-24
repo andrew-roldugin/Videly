@@ -1,4 +1,4 @@
-package ru.vsu.csf.group7.security;
+package ru.vsu.csf.group7.config;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -43,7 +43,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                         user.getAuthorities()
                 );
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                authenticationToken.setDetails(user.getId());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         } catch (Exception e) {

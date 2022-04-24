@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### custom ###
+src/main/java/ru/vsu/csf/group7/config/MyTomcatConfiguration.java
+src/main/java/ru/vsu/csf/group7/config/CORS.java
+
+

@@ -1,44 +1,57 @@
 package ru.vsu.csf.group7.controllers;
 
-import lombok.AllArgsConstructor;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.vsu.csf.group7.http.request.LoginRequest;
+import ru.vsu.csf.group7.http.request.SignupRequest;
+import ru.vsu.csf.group7.http.response.MessageResponse;
+import ru.vsu.csf.group7.services.UserService;
+import ru.vsu.csf.group7.validations.ResponseErrorValidation;
 
-//import javax.validation.Valid;
-
-import java.net.http.HttpClient;
-import java.util.Optional;
+import javax.validation.Valid;
+import java.util.concurrent.ExecutionException;
 
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/auth")
 @PreAuthorize("permitAll()")
-@AllArgsConstructor
 public class AuthController {
 
 
 //    private final JWTTokenProvider jwtTokenProvider;
-//    private final UserService userService;
-//    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 //    private final TokenService tokenService;
-//
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+
+    @Autowired
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+    }
+
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<Object> login() {
 //        final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
 //        if (!ObjectUtils.isEmpty(errors)) return errors;
-//
-//        return ResponseEntity.ok(new JWTTokenResponse(doLogin(loginRequest)));
-//    }
+
+        return ResponseEntity.ok("login");
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Object> test() {
+        return ResponseEntity.ok("test");
+    }
+
 //
 //    private String[] doLogin(LoginRequest loginRequest) {
 //        Authentication authentication = authenticationManager
@@ -53,20 +66,22 @@ public class AuthController {
 //                tokenService.createRefreshToken(loginRequest.getLogin()).getRefreshToken()
 //        };
 //    }
-//
-//    @PostMapping("/register")
-//    public ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
-//        final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
-//        if (!ObjectUtils.isEmpty(errors)) return errors;
-//        final User user = userService.createUser(signupRequest);
-////        final LoginRequest loginRequest = new LoginRequest();
-////        loginRequest.setLogin(user.getLogin());
-////        loginRequest.setPassword(user.getPassword());
-////        return ResponseEntity.ok(login(loginRequest, null));
-//
-//        return ResponseEntity.ok().body(new MessageResponse("Пользователь успешно создан"));
-//    }
-//
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+        final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) return errors;
+        try {
+            userService.createUser(signupRequest);
+            //return ResponseEntity.ok().body(user.getUid());
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Произошла ошибка при регистрации" + e.getMessage()));
+        } catch (ExecutionException | InterruptedException e) {
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка при регистрации"));
+        }
+        return ResponseEntity.ok().body(new MessageResponse("Пользователь успешно создан"));
+    }
+
 //    @PostMapping("/refresh")
 //    public ResponseEntity<Object> refreshToken(@Valid @RequestBody RefreshTokenRequest req, BindingResult bindingResult) {
 //        Optional<UserToken> t;

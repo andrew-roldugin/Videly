@@ -1,4 +1,4 @@
-package ru.vsu.csf.group7.security;
+package ru.vsu.csf.group7.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.vsu.csf.group7.services.CustomUserDetailsService;
 
 @Configuration
@@ -34,14 +32,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
-                .csrf().and().cors().disable()
+                .cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint())
-                .and().authorizeRequests()
-                .antMatchers(SecurityConstants.SIGN_UP_URLS, "/api/test/**").permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .and().requiresChannel().anyRequest().requiresSecure()
+                .and().authorizeRequests().antMatchers(SecurityConstants.SIGN_UP_URLS).permitAll()
+                .antMatchers("/api/test/**").permitAll()
+                .anyRequest().authenticated();
+
+
+//        http
+//                .csrf().and().cors().disable()
+//                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint())
+//                .and().authorizeRequests()
+//                .antMatchers(SecurityConstants.SIGN_UP_URLS).permitAll()
+//                .and().requiresChannel().antMatchers("/api/test/**").requiresSecure()
+//                //.and()..anyRequest().authenticated()
+//                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+//                .and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -60,10 +69,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter() {
-        return new JWTAuthenticationFilter();
-    }
+//    @Bean
+//    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+//        return new JWTAuthenticationFilter();
+//    }
 
     @Bean
     public JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint() {

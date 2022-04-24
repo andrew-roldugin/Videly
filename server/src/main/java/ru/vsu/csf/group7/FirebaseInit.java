@@ -1,4 +1,4 @@
-package ru.vsu.csf.group7.services;
+package ru.vsu.csf.group7;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
