@@ -16,17 +16,10 @@ public class HTTPS {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
             @Override
             protected void postProcessContext(Context context) {
-//                SecurityConstraint securityConstraint = new SecurityConstraint();
-//                securityConstraint.setUserConstraint("CONFIDENTIAL");
-//                SecurityCollection collection = new SecurityCollection();
-//                collection.addMethod("org.apache.coyote.http11.Http11NioProtocol");
-//                //collection.addPattern("/**");
-//                securityConstraint.addCollection(collection);
-//                context.addConstraint(securityConstraint);
-
                 var securityConstraint = new SecurityConstraint();
                 securityConstraint.setUserConstraint("CONFIDENTIAL");
                 var collection = new SecurityCollection();
+                //                collection.addMethod("org.apache.coyote.http11.Http11NioProtocol");
                 collection.addPattern("/*");
                 securityConstraint.addCollection(collection);
                 context.addConstraint(securityConstraint);

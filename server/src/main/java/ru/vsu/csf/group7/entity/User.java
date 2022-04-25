@@ -2,6 +2,7 @@ package ru.vsu.csf.group7.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,12 +15,16 @@ import java.util.Collections;
 import java.util.List;
 
 @Setter
+@Getter
+@NoArgsConstructor
 public class User implements UserDetails {
 
+    private String id;
     private String email, password;
+    private boolean isEnabled = true;
 
     @JsonIgnore
-    private List<GrantedAuthority> grantedAuthorities;
+    private List<? extends GrantedAuthority> grantedAuthorities;
 
     public User(String email, String password, List<GrantedAuthority> grantedAuthorities) {
         this.email = email;
@@ -77,6 +82,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 }

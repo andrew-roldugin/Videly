@@ -1,4 +1,5 @@
 HELP.md
+!.host.txt
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -37,4 +38,6 @@ src/main/java/ru/vsu/csf/group7/config/MyTomcatConfiguration.java
 src/main/java/ru/vsu/csf/group7/config/CORS.java
 src/main/resources/serviceAccount.json
 src/main/resources/VidelySrvKey.p12
+
+
 

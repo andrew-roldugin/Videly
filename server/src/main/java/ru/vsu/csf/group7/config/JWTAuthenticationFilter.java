@@ -1,5 +1,6 @@
 package ru.vsu.csf.group7.config;
 
+import com.google.firebase.auth.FirebaseToken;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.vsu.csf.group7.services.CustomUserDetailsService;
+import ru.vsu.csf.group7.services.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,17 +28,19 @@ import java.io.IOException;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTTokenProvider provider;
+    private TokenProvider provider;
     @Autowired
-    private CustomUserDetailsService service;
+    private UserService service;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             final String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && provider.validateToken(jwt)) {
-                String login = provider.getUserLoginFromToken(jwt);
-                UserDetails user = service.loadUserByUsername(login);
+            FirebaseToken firebaseToken;
+            if (StringUtils.hasText(jwt) && (firebaseToken = provider.validateToken(jwt)) != null) {
+                String email = provider.getUserLoginFromToken(firebaseToken);
+                UserDetails user = service.findUserByEmail(email);
+                if (user == null) return;
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         user,
                         null,

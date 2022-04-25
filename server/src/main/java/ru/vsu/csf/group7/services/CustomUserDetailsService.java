@@ -1,5 +1,6 @@
 package ru.vsu.csf.group7.services;
 
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -19,15 +20,15 @@ import java.util.concurrent.ExecutionException;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
-    public UserDetails loadUserByUsername(String login) {
-            Firestore dbFirestore = FirestoreClient.getFirestore();
+    public UserDetails loadUserByUsername(String email) {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
         try {
-            return dbFirestore
+            DocumentSnapshot documentSnapshot = dbFirestore
                     .collection("users")
-                    .document(FirebaseAuth.getInstance().getUserByEmail(login).getUid())
+                    .document(FirebaseAuth.getInstance().getUserByEmail(email).getUid())
                     .get()
-                    .get()
-                    .toObject(User.class);
+                    .get();
+            return documentSnapshot.toObject(User.class);
         } catch (InterruptedException | ExecutionException | FirebaseAuthException e) {
             e.printStackTrace();
         }
