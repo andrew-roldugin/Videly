@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "573625385386",
+    "project_id": "videly-2fae9",
+    "storage_bucket": "videly-2fae9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573625385386:android:e938b244458f2d2279abd3",
+        "android_client_info": {
+          "package_name": "ru.vsu.csf.g7_1.videly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573625385386-tg8f90kvaj2q3mhbh1mdqaf835nmul4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOsRDIUYjjtlgznw3Wtu_ko8NGj4muL7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573625385386-tg8f90kvaj2q3mhbh1mdqaf835nmul4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

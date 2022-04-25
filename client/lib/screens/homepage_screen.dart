@@ -1,0 +1,94 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+
+import 'package:http/io_client.dart';
+
+class HomepageScreen extends StatelessWidget {
+  static const String routeName = '/homepage';
+
+  const HomepageScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                // Implement logout functionality
+
+                Navigator.pop(context);
+              }),
+        ],
+        title: const Text(
+          'Homepage',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.lightBlueAccent,
+      ),
+      body: TstWgt(),
+    );
+  }
+}
+
+class TstWgt extends StatefulWidget {
+  const TstWgt({Key? key}) : super(key: key);
+
+  @override
+  State<TstWgt> createState() => _TstWgtState();
+}
+
+class _TstWgtState extends State<TstWgt> {
+  String msg = "qq";
+
+  _sendRequest() async {
+    var _client = HttpClient();
+    _client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+
+    // var url = Uri.https("45.8.248.185:8443", "/api/test/delete");
+
+    print("_sendRequest");
+
+    final http = IOClient(_client);
+
+    await http
+        .get(Uri.https("45.8.248.185:8443", "/api/test/hello"))
+        .then((res) {
+      if (res.statusCode == 200) {
+        msg = res.body + "@" + DateTime.now().toString();
+      } else {
+        msg = "Error!!!";
+      }
+    }).onError((error, stackTrace) {
+      msg = error.toString();
+    });
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          MaterialButton(
+            child: Text('Send request Delete'),
+            onPressed: () => _sendRequest(),
+          ),
+          Text(
+            msg,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
