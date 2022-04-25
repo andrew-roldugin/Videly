@@ -1,19 +1,15 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'package:client/screens/homepage_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/screens/splash_screen.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
     SplashScreen.routeName: (BuildContext context) => const SplashScreen(),
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
-    HomepageScreen.routeName:  (BuildContext context) => const HomepageScreen(),
+    HomepageScreen.routeName: (BuildContext context) => const HomepageScreen(),
   };
 
   // await WidgetsFlutterBinding.ensureInitialized();

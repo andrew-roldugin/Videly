@@ -1,10 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
-
 import 'package:http/io_client.dart';
 
 class HomepageScreen extends StatelessWidget {
@@ -31,7 +27,7 @@ class HomepageScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.lightBlueAccent,
       ),
-      body: TstWgt(),
+      body: const TstWgt(),
     );
   }
 }
@@ -53,8 +49,6 @@ class _TstWgtState extends State<TstWgt> {
 
     // var url = Uri.https("45.8.248.185:8443", "/api/test/delete");
 
-    print("_sendRequest");
-
     final http = IOClient(_client);
 
     await http
@@ -73,22 +67,20 @@ class _TstWgtState extends State<TstWgt> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          MaterialButton(
-            child: Text('Send request Delete'),
-            onPressed: () => _sendRequest(),
+    return Column(
+      children: [
+        MaterialButton(
+          child: const Text('Send request Delete'),
+          onPressed: () => _sendRequest(),
+        ),
+        Text(
+          msg,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.black,
           ),
-          Text(
-            msg,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
