@@ -19,7 +19,7 @@ public class TokenService {
     @Value("${webApiKey}")
     private String webApiKey;
 
-    public Object getVerifiedIdToken(String customToken) {
+    public JWTTokenResponse getVerifiedIdToken(String customToken) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key=" + webApiKey;
 
@@ -33,6 +33,6 @@ public class TokenService {
             String tokens[] = new String[]{(String) responseBody.get("idToken"), (String) responseBody.get("refreshToken")};
             return new JWTTokenResponse(tokens);
         }
-        throw new ApiException("Произошла ошибка при авторизации");
+        throw new ApiException("Произошла ошибка при авторизации\nПричина: не удается проверить токен");
     }
 }

@@ -8,9 +8,11 @@ import lombok.Data;
 public class JWTTokenResponse {
     private String accessToken;
     private String refreshToken;
+    private String customToken;
 
     public JWTTokenResponse(String[] tokens) {
         this.accessToken = tokens[0];
         this.refreshToken = tokens[1];
+        this.customToken = null;
     }
 }

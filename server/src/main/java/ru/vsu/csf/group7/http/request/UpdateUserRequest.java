@@ -9,11 +9,9 @@ import javax.validation.constraints.Size;
 
 @Data
 public class UpdateUserRequest {
-    @NotEmpty(message = "Пожалуйста, введите логин")
-    private String login;
+//    @NotEmpty(message = "Пожалуйста, введите логин")
+//    private String login;
 
     private String password;
-
-    private String aboutUser;
-
+    private boolean isBanned;
 }

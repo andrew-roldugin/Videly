@@ -12,11 +12,10 @@ import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.SignupRequest;
+import ru.vsu.csf.group7.http.request.UpdateUserRequest;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -43,7 +42,7 @@ public class UserService {
         return collectionsApiFuture.get().getUpdateTime().toString();
     }
 
-    public User findUserByEmail(String login) throws FirebaseAuthException, ExecutionException, InterruptedException, UserNotFoundException {
+    public User findUserByEmail(String login) throws ExecutionException, InterruptedException, UserNotFoundException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
         List<QueryDocumentSnapshot> documents = dbFirestore
@@ -53,7 +52,7 @@ public class UserService {
                 .get()
                 .getDocuments();
         if (documents.isEmpty())
-            throw new UserNotFoundException("логном", login);
+            throw new UserNotFoundException("логином", login);
 
         QueryDocumentSnapshot queryDocumentSnapshot = documents.get(0);
         User u = new User();
@@ -70,5 +69,13 @@ public class UserService {
         u.setGrantedAuthorities(collect);
 
         return u; //FirebaseAuth.getInstance().getUserByEmail(login);
+    }
+
+    public void removeUser(String id) {
+
+    }
+
+    public User updateUserById(UpdateUserRequest req, String userId) {
+        return null;
     }
 }
