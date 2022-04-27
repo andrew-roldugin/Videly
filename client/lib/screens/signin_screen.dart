@@ -1,8 +1,14 @@
+import 'dart:developer';
+
+import 'package:client/http/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:client/models/login_form_data.dart';
+import 'package:client/domain/models/login_form_data.dart';
 import 'package:client/screens/homepage_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/widgets/common/app_title.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:validators/validators.dart' as validator;
 import 'package:client/widgets/common/orientation_mode.dart';
 
@@ -33,8 +39,7 @@ class SignInScreen extends StatelessWidget {
                     message: "Войти на Videly",
                   ),
                   Padding(
-                    padding:
-                        EdgeInsets.fromLTRB(16, 100, 16, 70),
+                    padding: EdgeInsets.fromLTRB(16, 100, 16, 70),
                     child: LoginForm(),
                   ),
                   _BottomBar()
@@ -144,7 +149,7 @@ class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onChanged: (v) => _formData.email = v,
+            onChanged: (v) => _formData.login = v,
           ),
           const SizedBox(
             height: 25,
@@ -185,15 +190,28 @@ class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
                   "Войти",
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_validate()) {
-                    Navigator.pushReplacementNamed(
-                        context, HomepageScreen.routeName);
+                    await GetIt.instance<AuthenticationService>()
+                        .signIn(formData: _formData)
+                        .then((value) {
+                          if (value) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              HomepageScreen.routeName,
+                            );
+                          }
+                        },
+                    );
                   }
                 },
               ),
               MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (ctx) => const ResetPasswordForm());
+                },
                 child: Text(
                   "Забыли пароль?",
                   style: Theme.of(context).textTheme.bodyText1,
@@ -221,6 +239,55 @@ class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ResetPasswordForm extends StatefulWidget {
+  const ResetPasswordForm({Key? key}) : super(key: key);
+
+  @override
+  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
+}
+
+class _ResetPasswordFormState extends State<ResetPasswordForm> {
+  final _emailInputController = TextEditingController();
+
+  void _resetPassword(String email) {
+    FirebaseAuth.instance
+        .sendPasswordResetEmail(email: email)
+        .then((value) => log("Письмо отправлено"));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Column(children: [
+        TextFormField(
+          validator: (v) => v != null && validator.isEmail(v)
+              ? null
+              : "Введите корректный Email",
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            prefixIcon: const Icon(Icons.account_circle),
+            hintText: "Email",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onChanged: (v) => _emailInputController.text = v,
+        ),
+        MaterialButton(
+          child: const Text(
+            "Отправить письмо",
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () => _resetPassword(_emailInputController.value.text),
+        )
+      ]),
     );
   }
 }

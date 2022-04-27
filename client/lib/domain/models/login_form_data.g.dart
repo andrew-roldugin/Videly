@@ -8,12 +8,12 @@ part of 'login_form_data.dart';
 
 LoginFormData _$LoginFormDataFromJson(Map<String, dynamic> json) =>
     LoginFormData(
-      email: json['email'] as String?,
+      login: json['login'] as String?,
       password: json['password'] as String?,
     );
 
 Map<String, dynamic> _$LoginFormDataToJson(LoginFormData instance) =>
     <String, dynamic>{
-      'email': instance.email,
+      'login': instance.login,
       'password': instance.password,
     };

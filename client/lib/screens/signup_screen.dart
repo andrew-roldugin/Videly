@@ -1,9 +1,11 @@
+import 'package:client/http/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:client/models/register_form_data.dart';
+import 'package:client/domain/models/register_form_data.dart';
 import 'package:client/screens/homepage_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/widgets/common/app_title.dart';
 import 'package:client/widgets/common/orientation_mode.dart';
+import 'package:get_it/get_it.dart';
 import 'package:validators/validators.dart' as validator;
 
 class SignUpScreen extends StatelessWidget {
@@ -118,6 +120,15 @@ class _RegisterFormState extends State<RegisterForm>
     }
     _formKey.currentState?.save();
     return true;
+  }
+
+  void _signUp(ctx) {
+    var authService = GetIt.instance<AuthenticationService>();
+    authService.signUp(formData: _formData).then((value) {
+      if (value) {
+        Navigator.pushReplacementNamed(context, HomepageScreen.routeName);
+      }
+    });
   }
 
   @override
@@ -238,8 +249,7 @@ class _RegisterFormState extends State<RegisterForm>
                 ),
                 onPressed: () {
                   if (_validate()) {
-                    Navigator.pushReplacementNamed(
-                        context, HomepageScreen.routeName);
+                    _signUp(context);
                   }
                 },
               ),

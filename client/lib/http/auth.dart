@@ -1,8 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
+import 'dart:io';
 
-import 'package:client/models/user_model.dart';
+import 'package:client/domain/models/login_form_data.dart';
+import 'package:client/domain/models/register_form_data.dart';
+import 'package:client/domain/models/user_model.dart';
+import 'package:client/http/custom_http_client.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/io_client.dart';
+
+import '../domain/models/token_response.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
@@ -18,41 +32,101 @@ class AuthenticationService {
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   //1
-  Future<String> signIn(
-      {required String email, required String password}) async {
+  Future<bool> signIn({required LoginFormData formData}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      var dio = GetIt.instance<CustomHttpClient>().dio;
 
-      return "Signed In";
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return "No user found for that email.";
-      } else if (e.code == 'wrong-password') {
-        return "Wrong password provided for that user.";
-      } else {
-        return "Something Went Wrong.";
-      }
+      return await dio.post("/auth/login", data: formData.toJson()).then(
+        (res) async {
+          if (res.statusCode == 200) {
+            var token = res.data['customToken'];
+            return token;
+          }
+        },
+      ).then((token) async {
+        await _firebaseAuth.signInWithCustomToken(token);
+        return true;
+      });
+    } on SocketException catch (_) {
+      throw const SocketException("Вы не подключены к интеренету");
+    } on FormatException catch (_) {
+      throw const FormatException("Невозможно обработать данные");
     }
   }
 
+  // Future<String?> signIn({required LoginFormData formData}) async {
+  //   try {
+  //     // var _client = HttpClient();
+  //     // _client.badCertificateCallback =
+  //     //     (X509Certificate cert, String host, int port) => true;
+  //     // //_client.idleTimeout = const Duration(seconds: 3);
+  //     // final http = IOClient(_client);
+  //
+  //     // var dio = Dio();
+  //     //
+  //     // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+  //     //     (client) {
+  //     //   client.badCertificateCallback =
+  //     //       (X509Certificate cert, String host, int port) => true;
+  //     // };
+  //
+  //     // var jsonBody = jsonEncode(formData.toJson());
+  //     // await http.post(
+  //     //   Uri.https("45.8.248.185:8443", "/api/auth/login"),
+  //     //   body: jsonBody,
+  //     //   headers: {"Content-Type": "application/json"},
+  //     // )
+  //
+  //     var dio = GetIt.instance<CustomHttpClient>().dio;
+  //
+  //     return await dio
+  //         .post("/auth/login", data: formData.toJson())
+  //         .then((res) async {
+  //       print("/auth/login");
+  //       if (res.statusCode == 200) {
+  //         var atoken = res.data['accessToken'];
+  //         print("accessToken: " + atoken);
+  //         var token = res.data['refreshToken'];
+  //         return token;
+  //       }
+  //     }).then((token) async {
+  //       await _firebaseAuth.signInWithCustomToken(token);
+  //       print("Signed In");
+  //       return "Signed In";
+  //     });
+  //     // } on FirebaseAuthException catch (e) {
+  //     //   if (e.code == 'user-not-found') {
+  //     //     return "No user found for that email.";
+  //     //   } else if (e.code == 'wrong-password') {
+  //     //     return "Wrong password provided for that user.";
+  //     //   }
+  //   } on SocketException catch (_) {
+  //     throw const SocketException("Вы не подключены к интеренету");
+  //   } on FormatException catch (_) {
+  //     throw const FormatException("Невозможно обработать данные");
+  //   }
+  // }
+
   //2
-  Future<String> signUp(
-      {required String email, required String password}) async {
+  Future<bool> signUp({required RegisterFormData formData}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      return "Signed Up";
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return "The password provided is too weak.";
-      } else if (e.code == 'email-already-in-use') {
-        return "The account already exists for that email.";
-      }
-    } catch (e) {
-      log("При регистрации произошла неизвестная ошибка", error: e);
+      var dio = GetIt.instance<CustomHttpClient>().dio;
+
+      return await dio.post("/auth/register", data: formData.toJson()).then(
+        (res) async {
+          if (res.statusCode == 200) {
+            var token = res.data['refreshToken'];
+            return token;
+          }
+        },
+      ).then((token) async {
+        return true;
+      });
+    } on SocketException catch (_) {
+      throw const SocketException("Вы не подключены к интеренету");
+    } on FormatException catch (_) {
+      throw const FormatException("Невозможно обработать данные");
     }
-    return "Something Went Wrong.";
   }
 
   //3

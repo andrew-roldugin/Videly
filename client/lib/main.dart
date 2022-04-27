@@ -1,8 +1,14 @@
+import 'package:client/http/auth.dart';
+import 'package:client/http/custom_http_client.dart';
 import 'package:client/screens/homepage_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/screens/splash_screen.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 void main() async {
   final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
@@ -11,6 +17,12 @@ void main() async {
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
     HomepageScreen.routeName: (BuildContext context) => const HomepageScreen(),
   };
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  GetIt.instance.registerSingleton<AuthenticationService>(AuthenticationService(FirebaseAuth.instance));
+  GetIt.instance.registerSingleton<CustomHttpClient>(CustomHttpClient());
 
   // await WidgetsFlutterBinding.ensureInitialized();
   // ByteData data = await

@@ -5,13 +5,14 @@ part 'login_form_data.g.dart';
 
 @JsonSerializable( createFactory: true, createToJson: true)
 class LoginFormData {
-  String? email, password;
+  String? login;
+  String? password;
 
-  LoginFormData({this.email, this.password});
+  LoginFormData({this.login, this.password});
 
   bool validate(){
     return password != null && password!.length >= 6
-        && email != null && validator.isEmail(email!);
+        && login != null && validator.isEmail(login!);
   }
 
   factory LoginFormData.fromJson(Map<String, dynamic> json) => _$LoginFormDataFromJson(json);
