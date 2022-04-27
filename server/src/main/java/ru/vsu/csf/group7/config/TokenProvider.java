@@ -11,13 +11,8 @@ import ru.vsu.csf.group7.entity.User;
 @Log4j2
 public class TokenProvider {
 
-    public String generateToken(User user) throws FirebaseAuthException {
-        String userId = user.getId();
-//        Map<String, Object> additionalClaims = new HashMap<>();
-//        additionalClaims.put("email", user.getEmail());
-        //additionalClaims.put("role", user.getAuthorities());
-
-        return FirebaseAuth.getInstance().createCustomToken(userId/*, additionalClaims*/);
+    public String generateToken(String userId) throws FirebaseAuthException {
+        return FirebaseAuth.getInstance().createCustomToken(userId);
     }
 
 

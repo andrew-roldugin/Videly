@@ -39,7 +39,7 @@ public class UserService {
         ApiFuture<WriteResult> collectionsApiFuture = dbFirestore
                 .collection("users")
                 .document(userRecord.getUid()).set(u);
-        return collectionsApiFuture.get().getUpdateTime().toString();
+        return u.getId();
     }
 
     public User findUserByEmail(String login) throws ExecutionException, InterruptedException, UserNotFoundException {

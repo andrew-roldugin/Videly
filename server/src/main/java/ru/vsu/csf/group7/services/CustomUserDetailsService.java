@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
+@Log4j2
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
@@ -30,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .get();
             return documentSnapshot.toObject(User.class);
         } catch (InterruptedException | ExecutionException | FirebaseAuthException e) {
-            e.printStackTrace();
+           log.error(e.getLocalizedMessage());
         }
         return null;
     }
