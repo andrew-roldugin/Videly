@@ -13,6 +13,8 @@ import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.entity.Video;
+import ru.vsu.csf.group7.exceptions.NotFoundException;
+import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
 import ru.vsu.csf.group7.http.response.AccountDetailsResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
@@ -39,30 +41,44 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<Object> myAccount(Principal principal) {
         try {
-            User userByEmail = userService.findUserByEmail(principal.getName());
-            if (userByEmail != null){
-                Channel channel = channelService.getByUserId(userByEmail.getId());
-                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), ChannelDTO.fromChannel(channel));
+            User userByEmail = userService.getUserData(principal.getName());
+            if (userByEmail != null) {
+                //Channel channel = channelService.getByRef(userByEmail.getId());
+                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), ChannelDTO.fromChannel(userByEmail.getChannel()));
                 return ResponseEntity.ok(response);
             }
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.internalServerError().body(new MessageResponse("Произошла ошибка при получении пользовательских данных"));
     }
 
     @PreAuthorize("#userId.equals(authentication.principal.id.toString())")
     @PatchMapping("/{userId}")
-    public ResponseEntity<MessageResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserRequest req, BindingResult bindingResult) {
-        final User user = userService.updateUserById(req, userId);
-        return ResponseEntity.ok(new MessageResponse("Данные обновлены", UserDTO.fromUser(user)));
+    public ResponseEntity<MessageResponse> updateUser(@PathVariable("userId") String userId, @RequestBody UpdateUserRequest req, BindingResult bindingResult) {
+        try {
+            userService.updateUserById(req, userId);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getLocalizedMessage()));
+        }
+        return ResponseEntity.ok(new MessageResponse("Данные обновлены"));
     }
 
 //    @PreAuthorize("#userId.equals(authentication.principal.id.toString()) or hasRole('ROLE_ADMIN')")
     @PreAuthorize("#userId.equals(authentication.principal.id.toString())")
     @DeleteMapping("/{userId}")
     public ResponseEntity<MessageResponse> deleteUserAccount(@PathVariable("userId") String userId) {
-        userService.removeUser(userId);
-        return new ResponseEntity<>(new MessageResponse("Учетная запись успешно удалена"), HttpStatus.OK);
+        try {
+            userService.removeUser(userId);
+            return new ResponseEntity<>(new MessageResponse("Учетная запись успешно удалена"), HttpStatus.OK);
+        } catch (FirebaseAuthException e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(new MessageResponse("При удалении учетной записи произошла ошибка " + e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(new MessageResponse("При удалении учетной записи произошла ошибка"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

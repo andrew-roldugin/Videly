@@ -1,6 +1,8 @@
 package ru.vsu.csf.group7.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.DocumentReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,10 +20,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class User implements UserDetails {
-
     private String id;
     private String email, password;
     private boolean isEnabled = true;
+
+    private DocumentReference ref, channelRef;
+    private Channel channel;
+    private Timestamp creationTS = Timestamp.now();
 
     @JsonIgnore
     private List<? extends GrantedAuthority> grantedAuthorities;

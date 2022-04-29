@@ -1,5 +1,6 @@
 package ru.vsu.csf.group7.controllers;
 
+import com.fasterxml.jackson.databind.util.ObjectBuffer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,19 +14,24 @@ import ru.vsu.csf.group7.services.ChannelService;
 import ru.vsu.csf.group7.services.VideoService;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/channel")
 @AllArgsConstructor
 public class ChannelController {
-
     private final ChannelService channelService;
 
     @PostMapping("/createNew")
-    public ResponseEntity<ChannelDTO> createNewChannel(@RequestBody CreateChannelRequest request){
-        Channel channel = channelService.create(request);
-        return ResponseEntity.ok(ChannelDTO.fromChannel(channel));
+    public ResponseEntity<Object> createNewChannel(@RequestBody CreateChannelRequest request){
+        Channel channel = null;
+        try {
+            channel = channelService.create(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка при создании канала");
+        }
+        return ResponseEntity.created(null).build();
     }
 
     @GetMapping("/{channelId}")

@@ -1,6 +1,6 @@
 package ru.vsu.csf.group7.exceptions;
 
-public class UserNotFoundException extends ApiException {
+public class UserNotFoundException extends NotFoundException {
 
     public UserNotFoundException() {
         super("Пользователь не найден");
