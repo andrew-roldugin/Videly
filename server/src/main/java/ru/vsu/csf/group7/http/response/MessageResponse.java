@@ -2,9 +2,11 @@ package ru.vsu.csf.group7.http.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessageResponse {
    private String[] messages;
    private Object data;

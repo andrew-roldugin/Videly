@@ -1,7 +1,15 @@
 package ru.vsu.csf.group7.controllers;
 
 import com.google.firebase.auth.FirebaseAuthException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.Extensions;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,8 +25,10 @@ import ru.vsu.csf.group7.config.TokenProvider;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.LoginRequest;
+import ru.vsu.csf.group7.http.request.RefreshTokenRequest;
 import ru.vsu.csf.group7.http.request.SignupRequest;
 import ru.vsu.csf.group7.http.response.JWTTokenResponse;
+import ru.vsu.csf.group7.http.response.JWTTokenSuccessResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.ChannelService;
 import ru.vsu.csf.group7.services.TokenService;
@@ -34,6 +44,8 @@ import java.util.concurrent.ExecutionException;
 @CrossOrigin
 @RequestMapping("/api/auth")
 @PreAuthorize("permitAll()")
+
+@Tag(name = "AuthController", description = "Аутентификация")
 public class AuthController {
 
     private final TokenProvider provider;
@@ -52,7 +64,16 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = "application/json", consumes = "application/json")
+    @Operation(
+            summary = "Авторизация пользователя",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Авторизация прошла успешно", content = @Content(schema = @Schema(implementation = JWTTokenSuccessResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Произошла ошибка при авторизации", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Произошла неизвестная ошибка при авторизации", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+            },
+            description = "Процесс авторизации пользователя и получение для него пары токенов"
+    )
     public ResponseEntity<Object> signIn(@RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
         final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
@@ -62,9 +83,9 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Неправильный пароль");
             JWTTokenResponse tokens = getTokens(userByEmail.getId());
 
-            return ResponseEntity.ok(new MessageResponse("Авторизация прошла успешно", tokens));
+            return ResponseEntity.ok(new JWTTokenSuccessResponse(true, "Авторизация прошла успешно", tokens));
         } catch (FirebaseAuthException | UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Произошла ошибка при авторизации" + e.getLocalizedMessage()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Произошла ошибка при авторизации\n" + e.getLocalizedMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка при авторизации"));
         }
@@ -92,7 +113,16 @@ public class AuthController {
         return getTokens(userId);
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
+    @Operation(
+            summary = "Регистрация пользователя",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Регистрация прошла успешно", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Произошла ошибка при регистрации", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Произошла неизвестная ошибка при регистрации", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+            },
+            description = "Процесс регистрации пользователя"
+    )
     public ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
@@ -106,20 +136,4 @@ public class AuthController {
             return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка при регистрации"));
         }
     }
-
-//    @PostMapping("/refresh")
-//    public ResponseEntity<Object> refreshToken(@Valid @RequestBody RefreshTokenRequest req, BindingResult bindingResult) {
-//        Optional<UserToken> t;
-//        String refreshToken = req.getRefreshToken();
-//        if ((t = tokenService.findByToken(refreshToken)).isPresent()) {
-//            if (jwtTokenProvider.validateToken(refreshToken) && t.get().getRefreshToken().equals(refreshToken)) {
-//                //final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//                return ResponseEntity.ok(new JWTTokenResponse(new String[]{
-//                        SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(t.get().getUser(), null, null),
-//                        refreshToken
-//                }));
-//            }
-//        }
-//        throw new ApiException("Токен устарел");
-//    }
 }

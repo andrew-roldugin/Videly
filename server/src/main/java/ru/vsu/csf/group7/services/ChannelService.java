@@ -1,6 +1,7 @@
 package ru.vsu.csf.group7.services;
 
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class ChannelService {
-    public Channel getByUserId(String userId) throws ExecutionException, InterruptedException, NotFoundException{
+    public Channel getByUserId(String userId) throws ExecutionException, InterruptedException, NotFoundException {
         List<QueryDocumentSnapshot> queryDocumentSnapshots = FirestoreClient.getFirestore().collection("channels")
                 .whereEqualTo("userRef", "users/" + userId)
                 .get()
@@ -25,7 +26,7 @@ public class ChannelService {
         if (queryDocumentSnapshots.isEmpty())
             throw new NotFoundException();
 
-        return  queryDocumentSnapshots.get(0)
+        return queryDocumentSnapshots.get(0)
                 .toObject(Channel.class);
     }
 
@@ -41,11 +42,18 @@ public class ChannelService {
                 .commit()
                 .get();
 
-        return null;
+        return channel;
     }
 
-    public Channel findById(String channelId) {
-        return null;
+    public Channel findById(String channelId) throws ExecutionException, InterruptedException, NotFoundException {
+        DocumentSnapshot channel = FirestoreClient.getFirestore()
+                .collection("channels")
+                .document(channelId)
+                .get()
+                .get();
+        if (!channel.exists())
+            throw new NotFoundException(String.format("Канал с id %s не найден", channelId ));
+        return channel.toObject(Channel.class);
     }
 
     public void deleteById(String channelId) {

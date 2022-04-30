@@ -17,7 +17,7 @@ public class ChannelDTO {
     private String name;
     private String avatarURL, headerURL, about;
     private Timestamp createdAt;
-    private List<Video> videos;
+    private List<VideoDTO> videos;
 
     public static ChannelDTO fromChannel(Channel c) {
         return ChannelDTO.builder()
@@ -25,7 +25,6 @@ public class ChannelDTO {
                 .avatarURL(c.getAvatarURL())
                 .headerURL(c.getHeaderURL())
                 .createdAt(c.getCreatedAt())
-                .videos(c.getVideos())
                 .build();
     }
 }

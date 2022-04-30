@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint())
                 .and().requiresChannel().anyRequest().requiresSecure()
                 .and().authorizeRequests().antMatchers(SecurityConstants.SIGN_UP_URLS).permitAll()
+                .antMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
                 //.antMatchers("/api/test/**").permitAll()
                 //.mvcMatchers(HttpMethod.PATCH, "/api/test/patch").authenticated()
                 .anyRequest().authenticated()

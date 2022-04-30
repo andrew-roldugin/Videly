@@ -96,10 +96,75 @@
             <version>0.9.1</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
+<!--        <dependency>-->
+<!--            <groupId>io.swagger</groupId>-->
+<!--            <artifactId>swagger-annotations</artifactId>-->
+<!--            <version>1.6.6</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.7</version>
+        </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>io.swagger.codegen.v3</groupId>-->
+<!--            <artifactId>swagger-codegen-maven-plugin</artifactId>-->
+<!--            <version>3.0.24</version>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
     <build>
         <plugins>
+
+<!--            <plugin>-->
+<!--                <groupId>org.openapitools</groupId>-->
+<!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
+<!--                <version>3.3.4</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>compile</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <generatorName>spring</generatorName>-->
+<!--                            <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>-->
+<!--                            <output>${project.build.directory}/generated-sources</output>-->
+<!--                            <apiPackage>ru.vsu.csf.group7.controllers</apiPackage>-->
+<!--                            <modelPackage>ru.vsu.csf.group7.entity</modelPackage>-->
+<!--&lt;!&ndash;                            <supportingFilesToGenerate>&ndash;&gt;-->
+<!--&lt;!&ndash;                                ApiUtil.java&ndash;&gt;-->
+<!--&lt;!&ndash;                            </supportingFilesToGenerate>&ndash;&gt;-->
+<!--                            <configOptions>-->
+<!--                                <groupId>${project.groupId}</groupId>-->
+<!--                                <artifactId>${project.artifactId}</artifactId>-->
+<!--                                <artifactVersion>${project.version}</artifactVersion>-->
+<!--                                <delegatePattern>true</delegatePattern>-->
+<!--                                <sourceFolder>swagger</sourceFolder>-->
+<!--                                <library>spring-mvc</library>-->
+<!--                                <interfaceOnly>true</interfaceOnly>-->
+<!--                                <useBeanValidation>true</useBeanValidation>-->
+<!--                                <dateLibrary>java8</dateLibrary>-->
+<!--                                <java8>true</java8>-->
+<!--                            </configOptions>-->
+<!--                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -22,11 +22,14 @@ import java.util.List;
 public class User implements UserDetails {
     private String id;
     private String email, password;
-    private boolean isEnabled = true;
+    private boolean isBanned = false, isDeleted = false;
 
     private DocumentReference ref, channelRef;
     private Channel channel;
+    private List<Subscription> subscriptions;
     private Timestamp creationTS = Timestamp.now();
+
+    private List<ERole> roles;
 
     @JsonIgnore
     private List<? extends GrantedAuthority> grantedAuthorities;
@@ -87,6 +90,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return isEnabled;
+        return !isBanned;
     }
 }

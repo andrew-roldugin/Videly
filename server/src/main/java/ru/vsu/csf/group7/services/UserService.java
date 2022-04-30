@@ -7,6 +7,8 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.User;
@@ -15,6 +17,7 @@ import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.SignupRequest;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -57,7 +60,7 @@ public class UserService {
         u.setRef(queryDocumentSnapshot.getReference());
         u.setEmail(queryDocumentSnapshot.getString("email"));
         u.setPassword(queryDocumentSnapshot.getString("password"));
-        u.setEnabled(queryDocumentSnapshot.getBoolean("enabled"));
+        u.setBanned(queryDocumentSnapshot.getBoolean("isBanned"));
         ArrayList<Map<String, String>> grantedAuthorities = (ArrayList<Map<String, String>>) queryDocumentSnapshot.get("authorities");
 
         List<SimpleGrantedAuthority> collect = grantedAuthorities.stream()

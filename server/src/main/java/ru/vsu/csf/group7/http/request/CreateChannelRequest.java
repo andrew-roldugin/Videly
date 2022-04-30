@@ -5,17 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.vsu.csf.group7.entity.Video;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class CreateChannelRequest {
-    public CreateChannelRequest(String name) {
-        this.name = name;
-    }
-
+    @NotEmpty
     private String name;
-    private String avatarURL, headerURL, about;
+    private String avatarURL;
+    private String headerURL;
+    private String about;
     private LocalDateTime createdAt = LocalDateTime.now();
 }

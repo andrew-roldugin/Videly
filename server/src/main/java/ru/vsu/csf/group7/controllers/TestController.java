@@ -1,5 +1,7 @@
 package ru.vsu.csf.group7.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/api/test")
 @PreAuthorize("permitAll()")
+@Hidden
 public class TestController {
 
     @GetMapping("/hello")

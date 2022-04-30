@@ -27,6 +27,10 @@ public class VideoService {
 
     }
 
+    public void updateRating(String videoId, String userId, int delta){
+
+    }
+
     public Video create(CreateVideoRequest request) {
         return null;
     }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.vsu.csf.group7.exceptions.ApiException;
 import ru.vsu.csf.group7.http.response.JWTTokenResponse;
-import ru.vsu.csf.group7.http.response.JWTTokenSuccessResponse;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
