@@ -25,3 +25,4 @@
 ## Документация
 - [Техническое задание](https://github.com/andrew-roldugin/Videly/blob/main/DOC/%D0%A2%D0%97.pdf)
 - [Курсовой проект](https://github.com/andrew-roldugin/Videly/blob/main/DOC/%D0%9A%D1%83%D1%80%D1%81%D0%BE%D0%B2%D0%BE%D0%B9%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%20%D0%BF%D0%BE%20%D0%A2%D0%9F.pdf)
+- [Документация в Swagger](https://app.swaggerhub.com/apis/andrew-roldugin/videly-rest_api/1.0.0)
