@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 public class CommentDTO {
     private String id;
     private String content;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
     private LocalDateTime writtenOn;
 }

@@ -10,7 +10,7 @@ public class CreateVideoRequest {
     @Schema(required = true, name = "Название видео")
     private String title;
 
-    @Schema(name = "Ссылка на изображение")
+    @Schema(name = "Ссылка (url) на изображение")
     private String previewURL;
 
     @Schema(name = "Описание к видео")
@@ -22,6 +22,9 @@ public class CreateVideoRequest {
     @Schema(name = "Разрешить комментировать видео")
     private boolean allowComments = true;
 
-    @Schema(name = "Ссылка на канал, куда загружается видео")
+    @Schema(name = "Ссылка (id) на канал, куда загружается видео", required = true)
     private String channelId;
+
+    @Schema(name = "Ссылка (url) на видеофайл", required = true)
+    private String videoURL;
 }

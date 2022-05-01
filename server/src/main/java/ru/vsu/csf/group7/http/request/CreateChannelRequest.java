@@ -17,5 +17,4 @@ public class CreateChannelRequest {
     private String avatarURL;
     private String headerURL;
     private String about;
-    private LocalDateTime createdAt = LocalDateTime.now();
 }
