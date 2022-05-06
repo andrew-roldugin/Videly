@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class History {
-    private User user;
+    private UserDetailsImpl user;
     private List<Video> videos;
     private DocumentReference videoRef, userRef;
     private LocalDateTime ts;

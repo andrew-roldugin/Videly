@@ -15,6 +15,8 @@ import ru.vsu.csf.group7.http.response.JWTTokenSuccessResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.http.response.MessageWithDataResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Tag(name = "AuthController", description = "Аутентификация")
@@ -39,5 +41,5 @@ public interface IAuthAPI {
             },
             description = "Процесс регистрации пользователя"
     )
-    ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult);
+    ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response);
 }

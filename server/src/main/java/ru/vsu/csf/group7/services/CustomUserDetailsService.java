@@ -4,17 +4,13 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import ru.vsu.csf.group7.entity.User;
+import ru.vsu.csf.group7.entity.UserDetailsImpl;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -30,14 +26,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .document(FirebaseAuth.getInstance().getUserByEmail(email).getUid())
                     .get()
                     .get();
-            return documentSnapshot.toObject(User.class);
+            return documentSnapshot.toObject(UserDetailsImpl.class);
         } catch (InterruptedException | ExecutionException | FirebaseAuthException e) {
            log.error(e.getLocalizedMessage());
         }
         return null;
     }
 
-    public User loadUserById(Long id) {
+    public UserDetailsImpl loadUserById(Long id) {
         return null;
 //        return build(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
     }

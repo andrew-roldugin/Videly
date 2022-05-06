@@ -11,7 +11,7 @@ public class Room {
     private String id;
     private DocumentReference authorRef;
     private String password;
-    private List<User> participants;
+    private List<UserDetailsImpl> participants;
     private Video video;
     private Timestamp creationTimestamp;
 }

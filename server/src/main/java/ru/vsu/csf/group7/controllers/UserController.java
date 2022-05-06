@@ -13,11 +13,12 @@ import ru.vsu.csf.group7.controllers.interfaces.IUserAPI;
 import ru.vsu.csf.group7.dto.ChannelDTO;
 import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.entity.User;
+import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
+import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
 import ru.vsu.csf.group7.http.response.AccountDetailsResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
-import ru.vsu.csf.group7.http.response.MessageWithDataResponse;
 import ru.vsu.csf.group7.services.ChannelService;
 import ru.vsu.csf.group7.services.UserService;
 
@@ -36,7 +37,7 @@ public class UserController implements IUserAPI {
     private final ChannelService channelService;
 
     @Override
-    @GetMapping(value = "/",  produces = "application/json", consumes = "application/json")
+    @GetMapping(value = "/",  produces = "application/json")
     public ResponseEntity<Object> myAccount(Principal principal) {
         try {
             User userByEmail = userService.getUserData(principal.getName());
@@ -55,7 +56,7 @@ public class UserController implements IUserAPI {
 
     @Override
     @PreAuthorize("#userId.equals(authentication.principal.id.toString())")
-    @PatchMapping(value = "/{userId}",  produces = "application/json", consumes = "application/json")
+    @PatchMapping(value = "/{userId}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<MessageResponse> updateUser(
             @Parameter(description = "ID обновляемого пользователя", required = true) @PathVariable("userId") String userId,
             @Valid @RequestBody UpdateUserRequest req,
@@ -71,11 +72,11 @@ public class UserController implements IUserAPI {
 
 //    @PreAuthorize("#userId.equals(authentication.principal.id.toString()) or hasRole('ROLE_ADMIN')")
     @Override
-    @PreAuthorize("#userId.equals(authentication.principal.id.toString())")
-    @DeleteMapping(value = "/{userId}",  produces = "application/json", consumes = "application/json")
-    public ResponseEntity<MessageResponse> deleteUserAccount(@Parameter(description = "ID удаляемого аккаунта", required = true) @PathVariable("userId") String userId) {
+    @PreAuthorize("#userId.equals(authentication.principal.id)")
+    @DeleteMapping(value = "/{userId}", produces = "application/json")
+    public ResponseEntity<MessageResponse> deleteUserAccount(@PathVariable("userId") String userId, @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete) {
         try {
-            userService.removeUser(userId);
+            userService.removeUser(userId, fullDelete);
             return new ResponseEntity<>(new MessageResponse("Учетная запись успешно удалена"), HttpStatus.OK);
         } catch (FirebaseAuthException e){
             log.error(e.getMessage());
@@ -84,5 +85,16 @@ public class UserController implements IUserAPI {
             log.error(e.getMessage());
             return new ResponseEntity<>(new MessageResponse("При удалении учетной записи произошла ошибка"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(value = "/ban", produces = "application/json")
+    public ResponseEntity<MessageResponse> banUser(@RequestParam("userId") String userId, @RequestParam(value = "banned", required = false, defaultValue = "false") boolean banned) {
+        try {
+            userService.banUser(userId, banned);
+            return new ResponseEntity<>(new MessageResponse("Пользователь " + (banned ? "заблокирован" : "разблокирован")), HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.getMessage());
+        }
+        return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка"));
     }
 }

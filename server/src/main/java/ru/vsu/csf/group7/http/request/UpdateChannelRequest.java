@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.media.SchemaProperties;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Schema
 @Data
@@ -24,8 +27,22 @@ public class UpdateChannelRequest {
     private String headerURL;
 
     @Schema(description = "Разрешить комментирование")
-    private boolean allowComments;
+    private boolean allowComments = true;
 
     @Schema(description = "Разрешить оценивать ролики")
-    private boolean allowRating;
+    private boolean allowRating = true;
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> map = new HashMap<>();
+
+        Arrays.stream(this.getClass().getDeclaredFields()).forEach(field -> {
+            field.setAccessible(true);
+            try {
+                map.put(field.getName(), field.get(this));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return map;
+    }
 }

@@ -36,6 +36,7 @@ public interface IUserAPI {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Данные обновлены", content = @Content(schema = @Schema(implementation = UserDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Некорректные данные", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "403", description = "Действие запрещено"),
                     @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
@@ -51,9 +52,13 @@ public interface IUserAPI {
             summary = "Удаление аккаунта",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Действие запрещено"),
                     @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<MessageResponse> deleteUserAccount(@Parameter(description = "ID удаляемого аккаунта", required = true) @PathVariable("userId") String userId);
+    ResponseEntity<MessageResponse> deleteUserAccount(
+            @Parameter(description = "ID удаляемого аккаунта", required = true) @PathVariable("userId") String userId,
+            @Parameter(description = "Полностью удалить данные о пользователе?") @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete
+    );
 }

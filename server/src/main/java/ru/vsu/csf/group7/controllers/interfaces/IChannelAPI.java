@@ -15,10 +15,8 @@ import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 import ru.vsu.csf.group7.http.request.SearchChannelQuery;
 import ru.vsu.csf.group7.http.request.UpdateChannelRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
-import ru.vsu.csf.group7.http.response.MessageWithDataResponse;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "ChannelController", description = "Модуль обработки каналов")
 @SecurityRequirement(name = "bearer_token")
@@ -44,7 +42,9 @@ public interface IChannelAPI {
             },
             description = "Загрузка данных, когда пользователь переходит на какой-либо канал"
     )
-    ResponseEntity<Object> load(@Parameter(description = "ID кананла", required = true) @PathVariable("channelId") String channelId);
+    ResponseEntity<Object> getBy(@Parameter(description = "ID канала", required = true) @PathVariable("channelId") String channelId,
+                                 @Parameter(description = "ID пользователя", required = true) @PathVariable("userId") String userId
+    );
 
     @Operation(
             summary = "Поиск канала",
@@ -55,7 +55,7 @@ public interface IChannelAPI {
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<List<ChannelDTO>> findByQuery(@Parameter(description = "Поисковый запрос") @Valid @RequestBody SearchChannelQuery query);
+    ResponseEntity<Object> findByQuery(@Parameter(description = "Поисковый запрос") @Valid @RequestBody SearchChannelQuery query);
 
     @Operation(
             summary = "Обновление данных канала",
@@ -81,5 +81,8 @@ public interface IChannelAPI {
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<MessageResponse> delete(@Parameter(description = "ID удаляемого канала", required = true) @PathVariable("channelId") String channelId);
+    ResponseEntity<MessageResponse> delete(
+            @Parameter(description = "ID удаляемого канала", required = true) @PathVariable("channelId") String channelId,
+            @Parameter(description = "Полностью удалить данные о канале?") @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete
+    );
 }

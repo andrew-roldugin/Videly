@@ -4,25 +4,29 @@ import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.csf.group7.config.TokenProvider;
 import ru.vsu.csf.group7.controllers.interfaces.IAuthAPI;
 import ru.vsu.csf.group7.entity.User;
+import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.LoginRequest;
 import ru.vsu.csf.group7.http.request.SignupRequest;
 import ru.vsu.csf.group7.http.response.JWTTokenResponse;
 import ru.vsu.csf.group7.http.response.JWTTokenSuccessResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
-import ru.vsu.csf.group7.http.response.MessageWithDataResponse;
 import ru.vsu.csf.group7.services.ChannelService;
 import ru.vsu.csf.group7.services.TokenService;
 import ru.vsu.csf.group7.services.UserService;
 import ru.vsu.csf.group7.validations.ResponseErrorValidation;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.concurrent.ExecutionException;
 
@@ -39,15 +43,13 @@ public class AuthController implements IAuthAPI {
     private final TokenService tokenService;
     private final ChannelService channelService;
 
-    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(TokenProvider provider, UserService userService, TokenService tokenService, ChannelService channelService, AuthenticationManager authenticationManager) {
+    public AuthController(TokenProvider provider, UserService userService, TokenService tokenService, ChannelService channelService) {
         this.provider = provider;
         this.userService = userService;
         this.tokenService = tokenService;
         this.channelService = channelService;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -56,9 +58,9 @@ public class AuthController implements IAuthAPI {
         final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
         try {
-            User userByEmail = userService.findUserByEmail(loginRequest.getLogin());
+            User userByEmail = userService.findUserByEmail(loginRequest.getEmail());
             if (!userByEmail.getPassword().equals(loginRequest.getPassword()))
-                return ResponseEntity.badRequest().body("Неправильный пароль");
+                return ResponseEntity.badRequest().body(new MessageResponse("Неправильный пароль"));
             JWTTokenResponse tokens = getTokens(userByEmail.getId());
 
             return ResponseEntity.ok(new JWTTokenSuccessResponse(true, "Авторизация прошла успешно", tokens));
@@ -71,12 +73,12 @@ public class AuthController implements IAuthAPI {
 
     @Override
     @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+    public ResponseEntity<Object> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
         final ResponseEntity<Object> errors = new ResponseErrorValidation().mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
         try {
             String userId = userService.createUser(signupRequest);
-            JWTTokenResponse tokens = login(signupRequest, userId);
+            JWTTokenResponse tokens = login(signupRequest, userId, request, response);
             return ResponseEntity.ok().body(tokens);
         } catch (FirebaseAuthException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Произошла ошибка при регистрации\n" + e.getMessage()));
@@ -93,17 +95,20 @@ public class AuthController implements IAuthAPI {
         return tokens;
     }
 
-    private JWTTokenResponse login(SignupRequest signupRequest, String userId) throws FirebaseAuthException {
+    private JWTTokenResponse login(SignupRequest signupRequest, String userId, HttpServletRequest request, HttpServletResponse response) throws FirebaseAuthException {
 
-//        User principal = new User(signupRequest);
-////        Authentication authentication = authenticationManager
-////                .authenticate(new UsernamePasswordAuthenticationToken(
-////                        principal,
-////                        null,
-////                        principal.getAuthorities()
-////                ));
-////
-////        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetailsImpl principal = new UserDetailsImpl(signupRequest);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                principal,
+                null,
+                principal.getAuthorities()
+        );
+//        request.getSession();
+
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//        Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
         return getTokens(userId);
     }
 }

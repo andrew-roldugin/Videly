@@ -4,11 +4,9 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -24,6 +22,9 @@ public class Channel {
 
     public Channel(CreateChannelRequest request) {
         this.name = request.getName();
-        this.userRef = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRef();
+        this.avatarURL = request.getAvatarURL();
+        this.about = request.getAbout();
+        this.headerURL = request.getHeaderURL();
+//        this.userRef = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRef();
     }
 }

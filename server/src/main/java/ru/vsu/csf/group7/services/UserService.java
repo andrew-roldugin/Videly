@@ -6,18 +6,16 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.User;
+import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
 import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.SignupRequest;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
 
-import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -32,24 +30,32 @@ public class UserService {
         UserRecord userRecord = FirebaseAuth.getInstance().createUser(req);
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
-        UserDTO u = UserDTO.fromUserRecord(signupRequest, userRecord);
+//        UserDTO u = UserDTO.fromUserRecord(signupRequest, userRecord);
 
         dbFirestore
                 .collection("users")
                 .document(userRecord.getUid())
-                .set(u);
+                .set(new User(signupRequest, userRecord));
 
-        return u.getId();
+        return userRecord.getUid();
     }
 
-    public User getUserData(String login) throws ExecutionException, InterruptedException {
+    public User getUserData(String login) throws ExecutionException, InterruptedException, UserNotFoundException, NotFoundException {
         QueryDocumentSnapshot queryDocumentSnapshot = findUser(login);
 
         User userByEmail = mapToUser(queryDocumentSnapshot);
+        if (userByEmail.isDeleted())
+            throw new UserNotFoundException();
+
         try {
-            userByEmail.setChannel(((DocumentReference) Objects.requireNonNull(queryDocumentSnapshot.get("channelRef"))).get().get().toObject(Channel.class));
-        } catch (NullPointerException e){
-            throw new NotFoundException("Канал не найден");
+            Channel channel = ((DocumentReference) Objects.requireNonNull(queryDocumentSnapshot.get("channelRef")))
+                    .get()
+                    .get()
+                    .toObject(Channel.class);
+
+            userByEmail.setChannel(channel);
+        } catch (NullPointerException | ClassCastException e) {
+//            throw new NotFoundException("Канал не найден");
         }
         return userByEmail;
     }
@@ -60,9 +66,11 @@ public class UserService {
         u.setRef(queryDocumentSnapshot.getReference());
         u.setEmail(queryDocumentSnapshot.getString("email"));
         u.setPassword(queryDocumentSnapshot.getString("password"));
-        u.setBanned(queryDocumentSnapshot.getBoolean("isBanned"));
-        ArrayList<Map<String, String>> grantedAuthorities = (ArrayList<Map<String, String>>) queryDocumentSnapshot.get("authorities");
+        u.setBanned(Boolean.TRUE.equals(queryDocumentSnapshot.getBoolean("banned")));
+        u.setDeleted(Boolean.TRUE.equals(queryDocumentSnapshot.getBoolean("deleted")));
+        ArrayList<Map<String, String>> grantedAuthorities = (ArrayList<Map<String, String>>) queryDocumentSnapshot.get("grantedAuthorities");
 
+        assert grantedAuthorities != null;
         List<SimpleGrantedAuthority> collect = grantedAuthorities.stream()
                 .map(Map::values)
                 .map(String::valueOf)
@@ -136,15 +144,18 @@ public class UserService {
         return mapToUser(queryDocumentSnapshot);
     }
 
-    public void removeUser(String id) throws FirebaseAuthException {
+    public void removeUser(String id, boolean fullDelete) throws FirebaseAuthException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
-        FirebaseAuth.getInstance().deleteUser(id);
 
-        dbFirestore
+        DocumentReference documentReference = dbFirestore
                 .collection("users")
-                .document(id)
-                .delete();
+                .document(id);
+        if (fullDelete) {
+            dbFirestore.recursiveDelete(documentReference);
+            FirebaseAuth.getInstance().deleteUser(id);
+        } else
+            documentReference.update(Map.of("deleted", true));
     }
 
     public void updateUserById(UpdateUserRequest request, String userId) throws FirebaseAuthException {
@@ -156,5 +167,19 @@ public class UserService {
                 .collection("users")
                 .document(userId)
                 .update(Map.of("password", password));
+    }
+
+    public DocumentReference getUserRef() {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        String userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return dbFirestore.collection("users").document(userId);
+    }
+
+    public void banUser(String userId, boolean banned) {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        dbFirestore.collection("users")
+                .document(userId)
+                .update(Map.of("banned", banned));
     }
 }

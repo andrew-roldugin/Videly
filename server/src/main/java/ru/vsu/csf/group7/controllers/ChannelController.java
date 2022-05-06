@@ -29,45 +29,89 @@ public class ChannelController implements IChannelAPI {
     @Override
     @PostMapping(value = "/createNew", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> createNewChannel(@Valid @RequestBody CreateChannelRequest request) {
-        Channel channel = null;
         try {
-            channel = channelService.create(request);
+            Channel channel = channelService.create(request);
+            return ResponseEntity.ok().body(ChannelDTO.fromChannel(channel));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка при создании канала");
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse("Произошла ошибка при создании канала"));
         }
-        return ResponseEntity.ok().body(ChannelDTO.fromChannel(channel));
     }
 
-    @Override
-    @GetMapping(value = "/{channelId}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Object> load(@PathVariable("channelId") String channelId) {
+//    @GetMapping(value = "/", produces = "application/json")
+//    public ResponseEntity<Object> getByChannelId(@RequestParam("channelId") String channelId) {
+//        return getBy( channelId, "");
+//    }
+//
+//    @GetMapping(value = "/", produces = "application/json")
+//    public ResponseEntity<Object> getByUserId(@RequestParam("userId") String userId) {
+//        return getBy("", userId);
+//    }
+
+    @GetMapping(value = "/", produces = "application/json")
+    public ResponseEntity<Object> getBy(@RequestParam(value = "channelId", required = false, defaultValue = "") String channelId, @RequestParam(value = "userId", required = false) String userId) {
         try {
-            return ResponseEntity.ok(ChannelDTO.fromChannel(channelService.findById(channelId)));
+            Channel channel = !channelId.isEmpty() ? channelService.findByChannelId(channelId) : channelService.findByUserId(userId);
+            return ResponseEntity.ok(ChannelDTO.fromChannel(channel));
+        } catch (NotFoundException | NullPointerException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error("Ошибка при загрузке данных канала " + e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла внутренняя ошибка сервера"));
+        }
+    }
+
+    @GetMapping(value = "/all", produces = "application/json")
+    public ResponseEntity<Object> getAll() {
+        try {
+            List<ChannelDTO> channels = channelService.getAll().stream()
+                    .map(ChannelDTO::fromChannel)
+                    .toList();
+
+            return ResponseEntity.ok(channels);
         } catch (NotFoundException ex) {
             return ResponseEntity.notFound().build();
         } catch (ExecutionException | InterruptedException e) {
-            log.error("Ошибка при загрузке данныз канала " + e.getLocalizedMessage());
-            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла внутрення ошибка сервера"));
+            log.error("Ошибка при загрузке данных канала " + e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла внутренняя ошибка сервера"));
         }
     }
 
     @Override
     @GetMapping(value = "/find", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<List<ChannelDTO>> findByQuery(@Valid @RequestBody SearchChannelQuery query) {
-        return ResponseEntity.ok(channelService.findChannels(query).stream().map(ChannelDTO::fromChannel).toList());
+    public ResponseEntity<Object> findByQuery(@Valid @RequestBody SearchChannelQuery query) {
+        try {
+            List<Channel> channels = channelService.findChannels(query);
+            if (channels.isEmpty())
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(channels.stream().map(ChannelDTO::fromChannel).toList());
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла внутренняя ошибка сервера"));
+        }
     }
 
     @Override
     @PatchMapping(value = "/update/{channelId}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> update(@PathVariable("channelId") String channelId, @RequestBody UpdateChannelRequest req) {
-        Channel c = channelService.updateById(req, channelId);
-        return ResponseEntity.ok(ChannelDTO.fromChannel(c));
+        try {
+            Channel c = channelService.updateById(req, channelId);
+            return ResponseEntity.ok(ChannelDTO.fromChannel(c));
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла ошибка при обновлении данных канала"));
+        }
     }
 
     @Override
-    @DeleteMapping(value = "/delete/{channelId}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<MessageResponse> delete(@PathVariable("channelId") String channelId) {
-        channelService.deleteById(channelId);
-        return ResponseEntity.ok(new MessageResponse("Канал успешно удален"));
+    @DeleteMapping(value = "/delete/{channelId}", produces = "application/json")
+    public ResponseEntity<MessageResponse> delete(@PathVariable("channelId") String channelId, @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete) {
+        try {
+            channelService.deleteByChannelId(channelId, fullDelete);
+            return ResponseEntity.ok(new MessageResponse("Канал успешно удален"));
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла ошибка при удалении канала"));
+        }
     }
 }

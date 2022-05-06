@@ -20,6 +20,7 @@ public class ChannelDTO {
     private List<VideoDTO> videos;
 
     public static ChannelDTO fromChannel(Channel c) {
+        if (c == null) return null;
         return ChannelDTO.builder()
                 .name(c.getName())
                 .avatarURL(c.getAvatarURL())

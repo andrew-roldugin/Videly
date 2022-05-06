@@ -1,0 +1,196 @@
+<mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" background="none" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="node11" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Channel&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ about: String&lt;br/&gt;+ createdAt: Timestamp&lt;br/&gt;+ isDeleted: boolean&lt;br/&gt;+ videos: List&amp;lt;DocumentReference&amp;gt;&lt;br/&gt;+ name: String&lt;br/&gt;+ userRef: DocumentReference&lt;br/&gt;+ avatarURL: String&lt;br/&gt;+ headerURL: String&lt;br/&gt;+ allowComments: boolean&lt;br/&gt;+ allowRating: boolean&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getAvatarURL(): String&lt;br/&gt;+ setAllowRating(boolean): void&lt;br/&gt;+ equals(Object): boolean&lt;br/&gt;+ getName(): String&lt;br/&gt;+ getUserRef(): DocumentReference&lt;br/&gt;+ getCreatedAt(): Timestamp&lt;br/&gt;+ hashCode(): int&lt;br/&gt;+ setUserRef(DocumentReference): void&lt;br/&gt;+ setDeleted(boolean): void&lt;br/&gt;+ setAllowComments(boolean): void&lt;br/&gt;+ getHeaderURL(): String&lt;br/&gt;+ getAbout(): String&lt;br/&gt;+ getVideos(): List&amp;lt;DocumentReference&amp;gt;&lt;br/&gt;+ setVideos(List&amp;lt;DocumentReference&amp;gt;): void&lt;br/&gt;+ isAllowComments(): boolean&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ isAllowRating(): boolean&lt;br/&gt;+ setName(String): void&lt;br/&gt;+ setAbout(String): void&lt;br/&gt;+ isDeleted(): boolean&lt;br/&gt;+ setHeaderURL(String): void&lt;br/&gt;+ setCreatedAt(Timestamp): void&lt;br/&gt;+ toString(): String&lt;br/&gt;+ setAvatarURL(String): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="2703" y="-39" width="272" height="782" as="geometry" />
+    </mxCell>
+    <mxCell id="node0" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ChannelService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ create(CreateChannelRequest): Channel&lt;br/&gt;+ findChannels(SearchChannelQuery): List&amp;lt;Channel&amp;gt;&lt;br/&gt;+ deleteById(String): void&lt;br/&gt;+ getByUserId(String): Channel&lt;br/&gt;+ updateById(UpdateChannelRequest, String): Channel&lt;br/&gt;+ findById(String): Channel&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="2078" y="270" width="327" height="164" as="geometry" />
+    </mxCell>
+    <mxCell id="node7" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Comment&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ id: String&lt;br/&gt;+ videoRef: DocumentReference&lt;br/&gt;+ content: String&lt;br/&gt;+ writtenOn: LocalDateTime&lt;br/&gt;+ channelRef: DocumentReference&lt;br/&gt;+ isDeleted: boolean&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ setId(String): void&lt;br/&gt;+ getId(): String&lt;br/&gt;+ setWrittenOn(LocalDateTime): void&lt;br/&gt;+ toString(): String&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ getChannelRef(): DocumentReference&lt;br/&gt;+ getVideoRef(): DocumentReference&lt;br/&gt;+ getContent(): String&lt;br/&gt;+ isDeleted(): boolean&lt;br/&gt;+ getWrittenOn(): LocalDateTime&lt;br/&gt;+ setDeleted(boolean): void&lt;br/&gt;+ setChannelRef(DocumentReference): void&lt;br/&gt;+ setVideoRef(DocumentReference): void&lt;br/&gt;+ setContent(String): void&lt;br/&gt;+ hashCode(): int&lt;br/&gt;+ equals(Object): boolean&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="3431" y="93" width="261" height="518" as="geometry" />
+    </mxCell>
+    <mxCell id="node1" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;CommentService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ write(): void&lt;br/&gt;+ delete(): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="-446" y="314" width="160" height="82" as="geometry" />
+    </mxCell>
+    <mxCell id="node5" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;CustomUserDetailsService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ log: Logger&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ loadUserByUsername(String): UserDetails&lt;br/&gt;+ loadUserById(Long): User&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="147" y="302" width="266" height="108" as="geometry" />
+    </mxCell>
+    <mxCell id="node4" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;/i&gt;&lt;br/&gt;&lt;b&gt;ERole&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ USER: &lt;br/&gt;+ MODERATOR: &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ values(): ERole[]&lt;br/&gt;+ valueOf(String): ERole&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="795" y="291" width="162" height="153" as="geometry" />
+    </mxCell>
+    <mxCell id="node10" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;History&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ videoRef: DocumentReference&lt;br/&gt;+ ts: LocalDateTime&lt;br/&gt;+ user: User&lt;br/&gt;+ videos: List&amp;lt;Video&amp;gt;&lt;br/&gt;+ userRef: DocumentReference&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getTs(): LocalDateTime&lt;br/&gt;+ getUser(): User&lt;br/&gt;+ getVideos(): List&amp;lt;Video&amp;gt;&lt;br/&gt;+ getVideoRef(): DocumentReference&lt;br/&gt;+ getUserRef(): DocumentReference&lt;br/&gt;+ setUser(User): void&lt;br/&gt;+ setVideos(List&amp;lt;Video&amp;gt;): void&lt;br/&gt;+ toString(): String&lt;br/&gt;+ setVideoRef(DocumentReference): void&lt;br/&gt;+ hashCode(): int&lt;br/&gt;+ setUserRef(DocumentReference): void&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ setTs(LocalDateTime): void&lt;br/&gt;+ equals(Object): boolean&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="3753" y="126" width="248" height="452" as="geometry" />
+    </mxCell>
+    <mxCell id="node8" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Room&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ password: String&lt;br/&gt;+ id: String&lt;br/&gt;+ video: Video&lt;br/&gt;+ authorRef: DocumentReference&lt;br/&gt;+ creationTimestamp: Timestamp&lt;br/&gt;+ participants: List&amp;lt;User&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getVideo(): Video&lt;br/&gt;+ getId(): String&lt;br/&gt;+ getAuthorRef(): DocumentReference&lt;br/&gt;+ hashCode(): int&lt;br/&gt;+ getPassword(): String&lt;br/&gt;+ getParticipants(): List&amp;lt;User&amp;gt;&lt;br/&gt;+ getCreationTimestamp(): Timestamp&lt;br/&gt;+ equals(Object): boolean&lt;br/&gt;+ setId(String): void&lt;br/&gt;+ setAuthorRef(DocumentReference): void&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ toString(): String&lt;br/&gt;+ setPassword(String): void&lt;br/&gt;+ setVideo(Video): void&lt;br/&gt;+ setCreationTimestamp(Timestamp): void&lt;br/&gt;+ setParticipants(List&amp;lt;User&amp;gt;): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="1377" y="93" width="260" height="518" as="geometry" />
+    </mxCell>
+    <mxCell id="node12" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Subscription&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ followedSince: Timestamp&lt;br/&gt;+ userRef: DocumentReference&lt;br/&gt;+ id: String&lt;br/&gt;+ channelRef: DocumentReference&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ setChannelRef(DocumentReference): void&lt;br/&gt;+ getId(): String&lt;br/&gt;+ getUserRef(): DocumentReference&lt;br/&gt;+ getChannelRef(): DocumentReference&lt;br/&gt;+ getFollowedSince(): Timestamp&lt;br/&gt;+ setId(String): void&lt;br/&gt;+ setUserRef(DocumentReference): void&lt;br/&gt;+ setFollowedSince(Timestamp): void&lt;br/&gt;+ equals(Object): boolean&lt;br/&gt;+ toString(): String&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ hashCode(): int&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="474" y="159" width="261" height="386" as="geometry" />
+    </mxCell>
+    <mxCell id="node13" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SubscriptionService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ subscribe(): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="2466" y="325" width="176" height="58" as="geometry" />
+    </mxCell>
+    <mxCell id="node9" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;TokenService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ webApiKey: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getVerifiedIdToken(String): JWTTokenResponse&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="1017" y="313" width="300" height="84" as="geometry" />
+    </mxCell>
+    <mxCell id="node3" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;User&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ isBanned: boolean&lt;br/&gt;+ channel: Channel&lt;br/&gt;+ creationTS: Timestamp&lt;br/&gt;+ password: String&lt;br/&gt;+ ref: DocumentReference&lt;br/&gt;+ channelRef: DocumentReference&lt;br/&gt;+ id: String&lt;br/&gt;+ subscriptions: List&amp;lt;Subscription&amp;gt;&lt;br/&gt;+ isDeleted: boolean&lt;br/&gt;+ roles: List&amp;lt;ERole&amp;gt;&lt;br/&gt;+ grantedAuthorities: List&amp;lt;GrantedAuthority&amp;gt;&lt;br/&gt;+ email: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getChannelRef(): DocumentReference&lt;br/&gt;+ getId(): String&lt;br/&gt;+ getRoles(): List&amp;lt;ERole&amp;gt;&lt;br/&gt;+ getGrantedAuthorities(): List&amp;lt;GrantedAuthority&amp;gt;&lt;br/&gt;+ setRef(DocumentReference): void&lt;br/&gt;+ setRoles(List&amp;lt;ERole&amp;gt;): void&lt;br/&gt;+ setChannel(Channel): void&lt;br/&gt;+ setId(String): void&lt;br/&gt;+ getEmail(): String&lt;br/&gt;+ getCreationTS(): Timestamp&lt;br/&gt;+ setDeleted(boolean): void&lt;br/&gt;+ isBanned(): boolean&lt;br/&gt;+ isDeleted(): boolean&lt;br/&gt;+ setBanned(boolean): void&lt;br/&gt;+ setGrantedAuthorities(List&amp;lt;GrantedAuthority&amp;gt;): void&lt;br/&gt;+ setChannelRef(DocumentReference): void&lt;br/&gt;+ getRef(): DocumentReference&lt;br/&gt;+ setEmail(String): void&lt;br/&gt;+ setSubscriptions(List&amp;lt;Subscription&amp;gt;): void&lt;br/&gt;+ setPassword(String): void&lt;br/&gt;+ getChannel(): Channel&lt;br/&gt;+ setCreationTS(Timestamp): void&lt;br/&gt;+ getSubscriptions(): List&amp;lt;Subscription&amp;gt;&lt;br/&gt;+ getPassword(): String&lt;br/&gt;+ isAccountNonLocked(): boolean&lt;br/&gt;+ isCredentialsNonExpired(): boolean&lt;br/&gt;+ isEnabled(): boolean&lt;br/&gt;+ getUsername(): String&lt;br/&gt;+ isAccountNonExpired(): boolean&lt;br/&gt;+ getAuthorities(): Collection&amp;lt;GrantedAuthority&amp;gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="1698" y="-127" width="320" height="958" as="geometry" />
+    </mxCell>
+    <mxCell id="node2" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;UserService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ findUserByEmail(String): User&lt;br/&gt;+ getUserData(String): User&lt;br/&gt;+ removeUser(String): void&lt;br/&gt;+ updateUserById(UpdateUserRequest, String): void&lt;br/&gt;+ findUser(String): QueryDocumentSnapshot&lt;br/&gt;+ mapToUser(QueryDocumentSnapshot): User&lt;br/&gt;+ createUser(SignupRequest): String&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="-226" y="259" width="312" height="186" as="geometry" />
+    </mxCell>
+    <mxCell id="node14" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Video&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ channelRef: DocumentReference&lt;br/&gt;+ allowComments: boolean&lt;br/&gt;+ comments: List&amp;lt;Comment&amp;gt;&lt;br/&gt;+ allowRating: boolean&lt;br/&gt;+ commentsRefs: List&amp;lt;DocumentReference&amp;gt;&lt;br/&gt;+ views: int&lt;br/&gt;+ id: String&lt;br/&gt;+ videoURL: String&lt;br/&gt;+ previewURL: String&lt;br/&gt;+ description: String&lt;br/&gt;+ title: String&lt;br/&gt;+ length: long&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ getDescription(): String&lt;br/&gt;+ getId(): String&lt;br/&gt;+ getTitle(): String&lt;br/&gt;+ setAllowRating(boolean): void&lt;br/&gt;+ getPreviewURL(): String&lt;br/&gt;+ getChannelRef(): DocumentReference&lt;br/&gt;+ setViews(int): void&lt;br/&gt;+ hashCode(): int&lt;br/&gt;+ setId(String): void&lt;br/&gt;+ toString(): String&lt;br/&gt;+ canEqual(Object): boolean&lt;br/&gt;+ setChannelRef(DocumentReference): void&lt;br/&gt;+ getViews(): int&lt;br/&gt;+ getLength(): long&lt;br/&gt;+ setPreviewURL(String): void&lt;br/&gt;+ getCommentsRefs(): List&amp;lt;DocumentReference&amp;gt;&lt;br/&gt;+ getComments(): List&amp;lt;Comment&amp;gt;&lt;br/&gt;+ setVideoURL(String): void&lt;br/&gt;+ isAllowComments(): boolean&lt;br/&gt;+ equals(Object): boolean&lt;br/&gt;+ setDescription(String): void&lt;br/&gt;+ setLength(long): void&lt;br/&gt;+ setAllowComments(boolean): void&lt;br/&gt;+ isAllowRating(): boolean&lt;br/&gt;+ getVideoURL(): String&lt;br/&gt;+ setTitle(String): void&lt;br/&gt;+ setCommentsRefs(List&amp;lt;DocumentReference&amp;gt;): void&lt;br/&gt;+ setComments(List&amp;lt;Comment&amp;gt;): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="4062" y="-105" width="315" height="914" as="geometry" />
+    </mxCell>
+    <mxCell id="node6" parent="1" vertex="1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;VideoService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ updateRating(String, String, int): void&lt;br/&gt;+ findVideoById(String): Video&lt;br/&gt;+ updateVideoById(UpdateVideoRequest, String): Video&lt;br/&gt;+ findVideos(SearchVideoQuery): List&amp;lt;Video&amp;gt;&lt;br/&gt;+ deleteById(String): void&lt;br/&gt;+ create(CreateVideoRequest): Video&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;">
+      <mxGeometry x="3035" y="270" width="336" height="164" as="geometry" />
+    </mxCell>
+    <mxCell id="edge0" edge="1" value="" parent="1" source="node0" target="node11" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=1;startArrow=none;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=1.000;exitY=0.229;exitDx=0;exitDy=0;entryX=0.000;entryY=0.443;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label2" parent="edge0" vertex="1" connectable="0" value="«create»" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="2529" y="288" as="geometry" />
+    </mxCell>
+    <mxCell id="edge7" edge="1" value="" parent="1" source="node10" target="node3" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.500;exitY=1.000;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="3877" y="849" />
+          <mxPoint x="1668" y="849" />
+          <mxPoint x="1668" y="352" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label42" parent="edge7" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="3826" y="659" as="geometry" />
+    </mxCell>
+    <mxCell id="label46" parent="edge7" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="2031" y="830" as="geometry" />
+    </mxCell>
+    <mxCell id="label47" parent="edge7" vertex="1" connectable="0" value="user" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1668" y="756" as="geometry" />
+    </mxCell>
+    <mxCell id="edge3" edge="1" value="" parent="1" source="node10" target="node14" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=1.000;exitY=0.500;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label18" parent="edge3" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4006" y="333" as="geometry" />
+    </mxCell>
+    <mxCell id="label22" parent="edge3" vertex="1" connectable="0" value="*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4048" y="333" as="geometry" />
+    </mxCell>
+    <mxCell id="label23" parent="edge3" vertex="1" connectable="0" value="videos" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4017" y="392" as="geometry" />
+    </mxCell>
+    <mxCell id="edge5" edge="1" value="" parent="1" source="node8" target="node3" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=1.000;exitY=0.500;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label30" parent="edge5" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1647" y="333" as="geometry" />
+    </mxCell>
+    <mxCell id="label34" parent="edge5" vertex="1" connectable="0" value="*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1683" y="333" as="geometry" />
+    </mxCell>
+    <mxCell id="label35" parent="edge5" vertex="1" connectable="0" value="participants" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1634" y="352" as="geometry" />
+    </mxCell>
+    <mxCell id="edge2" edge="1" value="" parent="1" source="node8" target="node14" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.500;exitY=0.000;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1507" y="-153" />
+          <mxPoint x="3208" y="-153" />
+          <mxPoint x="3208" y="-134" />
+          <mxPoint x="4032" y="-134" />
+          <mxPoint x="4032" y="352" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label12" parent="edge2" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1456" y="22" as="geometry" />
+    </mxCell>
+    <mxCell id="label16" parent="edge2" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4021" y="-22" as="geometry" />
+    </mxCell>
+    <mxCell id="label17" parent="edge2" vertex="1" connectable="0" value="video" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4032" y="99" as="geometry" />
+    </mxCell>
+    <mxCell id="edge8" edge="1" value="" parent="1" source="node3" target="node11" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=1.000;exitY=0.396;exitDx=0;exitDy=0;entryX=0.000;entryY=0.373;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label48" parent="edge8" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="2023" y="234" as="geometry" />
+    </mxCell>
+    <mxCell id="label52" parent="edge8" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="2687" y="234" as="geometry" />
+    </mxCell>
+    <mxCell id="label53" parent="edge8" vertex="1" connectable="0" value="channel" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="2650" y="252" as="geometry" />
+    </mxCell>
+    <mxCell id="edge9" edge="1" value="" parent="1" source="node3" target="node4" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.000;exitY=0.789;exitDx=0;exitDy=0;entryX=0.500;entryY=1.000;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="876" y="628" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label54" parent="edge9" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1682" y="610" as="geometry" />
+    </mxCell>
+    <mxCell id="label58" parent="edge9" vertex="1" connectable="0" value="*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="867" y="418" as="geometry" />
+    </mxCell>
+    <mxCell id="label59" parent="edge9" vertex="1" connectable="0" value="roles" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="876" y="418" as="geometry" />
+    </mxCell>
+    <mxCell id="edge1" edge="1" value="" parent="1" source="node3" target="node12" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.000;exitY=0.211;exitDx=0;exitDy=0;entryX=0.500;entryY=0.000;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="604" y="75" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label6" parent="edge1" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="1682" y="57" as="geometry" />
+    </mxCell>
+    <mxCell id="label10" parent="edge1" vertex="1" connectable="0" value="*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="595" y="129" as="geometry" />
+    </mxCell>
+    <mxCell id="label11" parent="edge1" vertex="1" connectable="0" value="subscriptions" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="604" y="135" as="geometry" />
+    </mxCell>
+    <mxCell id="edge6" edge="1" value="" parent="1" source="node2" target="node3" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=1;startArrow=none;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.500;exitY=1.000;exitDx=0;exitDy=0;entryX=0.500;entryY=1.000;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="-70" y="864" />
+          <mxPoint x="1858" y="864" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label38" parent="edge6" vertex="1" connectable="0" value="«create»" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="869" y="843" as="geometry" />
+    </mxCell>
+    <mxCell id="edge4" edge="1" value="" parent="1" source="node14" target="node7" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=diamondThinstartSize=12;endArrow=openThin;endSize=12;strokeColor=#595959;exitX=0.000;exitY=0.766;exitDx=0;exitDy=0;entryX=1.000;entryY=0.970;entryDx=0;entryDy=0;">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="label24" parent="edge4" vertex="1" connectable="0" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="4044" y="577" as="geometry" />
+    </mxCell>
+    <mxCell id="label28" parent="edge4" vertex="1" connectable="0" value="*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="3700" y="577" as="geometry" />
+    </mxCell>
+    <mxCell id="label29" parent="edge4" vertex="1" connectable="0" value="comments" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;strokeColor=default;">
+      <mxGeometry x="3697" y="596" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>
