@@ -1,5 +1,6 @@
 package ru.vsu.csf.group7.services;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -60,10 +61,10 @@ public class UserService {
         return userByEmail;
     }
 
-    private User mapToUser(QueryDocumentSnapshot queryDocumentSnapshot) {
+    private User mapToUser(DocumentSnapshot queryDocumentSnapshot) {
         User u = new User();
         u.setId(queryDocumentSnapshot.getId());
-        u.setRef(queryDocumentSnapshot.getReference());
+//        u.setRef(queryDocumentSnapshot.getReference());
         u.setEmail(queryDocumentSnapshot.getString("email"));
         u.setPassword(queryDocumentSnapshot.getString("password"));
         u.setBanned(Boolean.TRUE.equals(queryDocumentSnapshot.getBoolean("banned")));
@@ -147,7 +148,6 @@ public class UserService {
     public void removeUser(String id, boolean fullDelete) throws FirebaseAuthException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
-
         DocumentReference documentReference = dbFirestore
                 .collection("users")
                 .document(id);
@@ -178,8 +178,18 @@ public class UserService {
     public void banUser(String userId, boolean banned) {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
+        Map<String, Object> extraInfo = new HashMap<>();
+        extraInfo.put("bannedBy", getUserRef());
+        extraInfo.put("reason", "");
+        extraInfo.put("timestamp", Timestamp.now());
+
         dbFirestore.collection("users")
                 .document(userId)
-                .update(Map.of("banned", banned));
+                .update(Map.of("banned", banned, "extra", extraInfo));
+    }
+
+    public boolean userProfileIsActive(DocumentReference userRef) throws ExecutionException, InterruptedException {
+        User user = mapToUser(userRef.get().get());
+        return !(Objects.requireNonNull(user).isBanned() || user.isDeleted());
     }
 }

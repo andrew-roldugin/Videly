@@ -1,16 +1,20 @@
 package ru.vsu.csf.group7.services;
 
-import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.csf.group7.entity.Channel;
+import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
+import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 import ru.vsu.csf.group7.http.request.SearchChannelQuery;
 import ru.vsu.csf.group7.http.request.UpdateChannelRequest;
 
+import javax.print.Doc;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,8 +58,19 @@ public class ChannelService {
                 .get();
 
         Channel channel = snapshot.toObject(Channel.class);
+
         if (channel == null || channel.isDeleted())
             throw new NotFoundException(String.format("Канал с id %s не найден", channelId));
+
+        try {
+            User user = channel.getUserRef().get().get().toObject(User.class);
+            if (user.isBanned() || user.isDeleted()) {
+                throw new NotFoundException(String.format("Канал с id %s не найден", channelId));
+            }
+        } catch (NullPointerException e) {
+            throw new UserNotFoundException();
+        }
+
         return channel;
     }
 
@@ -66,6 +81,11 @@ public class ChannelService {
                 .get()
                 .get();
 
+
+        if (!user.exists()
+                || Boolean.TRUE.equals(user.getBoolean("deleted"))
+                || Boolean.TRUE.equals(user.getBoolean("banned")))
+            throw new UserNotFoundException();
 
         Channel channel = ((DocumentReference) Objects.requireNonNull(user.get("channelRef")))
                 .get()
@@ -79,12 +99,13 @@ public class ChannelService {
     }
 
     public List<Channel> getAll() throws ExecutionException, InterruptedException {
-        return FirestoreClient.getFirestore()
+        List<Channel> channels = FirestoreClient.getFirestore()
                 .collection("channels")
                 .whereEqualTo("deleted", false)
                 .get()
                 .get()
                 .toObjects(Channel.class);
+        return filter(channels);
     }
 
     public void deleteByChannelId(String channelId, boolean fullDelete) throws ExecutionException, InterruptedException {
@@ -96,7 +117,12 @@ public class ChannelService {
         if (fullDelete) {
             writeBatch.delete(channelRef).commit();
         } else {
-            writeBatch.update(channelRef, Map.of("deleted", true)).commit();
+            Map<String, Object> extraInfo = new HashMap<>();
+            extraInfo.put("deletedBy", userService.getUserRef());
+            extraInfo.put("reason", "");
+            extraInfo.put("timestamp", Timestamp.now());
+
+            writeBatch.update(channelRef, Map.of("deleted", true, "extra", extraInfo)).commit();
         }
     }
 
@@ -107,19 +133,43 @@ public class ChannelService {
         return channel.get().get().toObject(Channel.class);
     }
 
-    private DocumentReference getChannelReference(String channelId) {
+    protected DocumentReference getChannelReference(String channelId) {
         return FirestoreClient.getFirestore()
                 .collection("channels")
                 .document(channelId);
     }
 
     public List<Channel> findChannels(SearchChannelQuery q) throws ExecutionException, InterruptedException {
-        return FirestoreClient.getFirestore()
+        List<Channel> channels = FirestoreClient.getFirestore()
                 .collection("channels")
-                .whereEqualTo("name", q.getName())
                 .whereEqualTo("deleted", false)
+                .orderBy("name")
+                .whereGreaterThanOrEqualTo("name", q.getName().toUpperCase())
+                .whereLessThanOrEqualTo("name", q.getName().toLowerCase() + "\uf8ff")
                 .get()
                 .get()
                 .toObjects(Channel.class);
+        return filter(channels);
+    }
+
+    private List<Channel> filter(List<Channel> channels) {
+        return channels.stream()
+                .filter(channel -> {
+                    DocumentSnapshot snapshot = null;
+                    try {
+                        snapshot = channel.getUserRef().get().get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return Boolean.FALSE.equals(snapshot.getBoolean("deleted")) && Boolean.FALSE.equals(snapshot.getBoolean("banned"));
+                })
+                .toList();
+    }
+
+    public boolean channelIsActive(DocumentReference channelRef) throws ExecutionException, InterruptedException, NullPointerException{
+        DocumentSnapshot snapshot = channelRef.get().get();
+        boolean profileIsActive = userService.userProfileIsActive(((DocumentReference) Objects.requireNonNull(snapshot.get("userRef"))));
+        Channel channel = snapshot.toObject(Channel.class);
+        return profileIsActive && !Objects.requireNonNull(channel).isDeleted();
     }
 }

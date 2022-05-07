@@ -26,6 +26,7 @@ public class ChannelDTO {
                 .avatarURL(c.getAvatarURL())
                 .headerURL(c.getHeaderURL())
                 .createdAt(c.getCreatedAt())
+                .about(c.getAbout())
                 .build();
     }
 }

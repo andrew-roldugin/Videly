@@ -7,5 +7,10 @@ import lombok.Data;
 @Schema
 public class SearchVideoQuery {
     @Schema(description = "Название видео для поиска", required = true)
-    private String name;
+    private String title;
+
+    @Schema(description = "На каком канале искать", required = true)
+    private String channelId;
+
+    int limit = 25, offset = 0;
 }

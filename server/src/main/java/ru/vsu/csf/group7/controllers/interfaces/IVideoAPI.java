@@ -16,7 +16,6 @@ import ru.vsu.csf.group7.http.request.SearchVideoQuery;
 import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 
-import java.util.List;
 @Tag(name = "VideoController", description = "Модуль обработки видео")
 @SecurityRequirement(name = "bearer_token")
 public interface IVideoAPI {
@@ -43,7 +42,7 @@ public interface IVideoAPI {
             description = "Загрузка данных, когда пользователь открывает какое-либо видео\n" +
                     "А также обновление количества просмотров"
     )
-    ResponseEntity<VideoDTO> loadVideo(@Parameter(description = "ID загружаемого видео", required = true) @PathVariable("videoId") String videoId);
+    ResponseEntity<Object> loadVideo(@Parameter(description = "ID загружаемого видео", required = true) @PathVariable("videoId") String videoId);
 
     @Operation(
             summary = "Поиск видео по различным критериям",
@@ -54,7 +53,7 @@ public interface IVideoAPI {
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<List<VideoDTO>> findByQuery(@RequestBody SearchVideoQuery searchVideoQuery);
+    ResponseEntity<Object> findByQuery(@RequestBody SearchVideoQuery searchVideoQuery);
 
     @Operation(
             summary = "Обновление данных о видео",
@@ -75,5 +74,8 @@ public interface IVideoAPI {
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<MessageResponse> delete(@Parameter(description = "ID удаляемого видео", required = true) @PathVariable("videoId") String videoId);
+    ResponseEntity<MessageResponse> delete(
+            @Parameter(description = "ID удаляемого видео", required = true) @PathVariable("videoId") String videoId,
+            @Parameter(description = "Полностью удалить данные о видео?") @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete
+    );
 }

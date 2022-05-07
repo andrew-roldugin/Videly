@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Schema
 @Data
-public class UpdateChannelRequest {
+public class UpdateChannelRequest implements Mappable {
     @Schema(description = "Новое имя канала", required = true)
     private String name;
 
@@ -32,17 +32,5 @@ public class UpdateChannelRequest {
     @Schema(description = "Разрешить оценивать ролики")
     private boolean allowRating = true;
 
-    public Map<String, Object> toMap(){
-        Map<String, Object> map = new HashMap<>();
 
-        Arrays.stream(this.getClass().getDeclaredFields()).forEach(field -> {
-            field.setAccessible(true);
-            try {
-                map.put(field.getName(), field.get(this));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return map;
-    }
 }

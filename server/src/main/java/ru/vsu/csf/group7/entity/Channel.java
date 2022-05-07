@@ -15,7 +15,7 @@ public class Channel {
     private String name;
     private DocumentReference userRef;
     private String avatarURL, headerURL, about;
-    private List<DocumentReference> videos;
+//    private List<DocumentReference> videos;
     private boolean allowComments = true, allowRating = true;
     private boolean isDeleted = false;
     private Timestamp createdAt = Timestamp.now();

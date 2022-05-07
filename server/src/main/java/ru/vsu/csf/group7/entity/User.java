@@ -3,6 +3,7 @@ package ru.vsu.csf.group7.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
 import com.google.firebase.auth.UserRecord;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class User {
     private String email, password;
     private boolean isBanned = false, isDeleted = false;
     private Channel channel;
-    private DocumentReference ref, channelRef;
+    private DocumentReference channelRef;
     private Timestamp creationTS = Timestamp.now();
 
 

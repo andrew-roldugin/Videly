@@ -33,10 +33,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return null;
     }
 
-    public UserDetailsImpl loadUserById(Long id) {
-        return null;
-//        return build(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
-    }
+//    public UserDetailsImpl loadUserById(Long id) {
+//        return null;
+////        return build(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
+//    }
 
 //    private User build(UserRecord u) {
 //        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(u.get));

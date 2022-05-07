@@ -9,7 +9,7 @@ import java.util.List;
 
 @Schema
 @Data
-public class UpdateVideoRequest {
+public class UpdateVideoRequest implements Mappable {
     @Schema(description = "Новое название видео", required = true)
     private String title;
 
