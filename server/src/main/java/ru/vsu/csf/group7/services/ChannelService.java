@@ -57,45 +57,40 @@ public class ChannelService {
                 .get()
                 .get();
 
-        Channel channel = snapshot.toObject(Channel.class);
-
-        if (channel == null || channel.isDeleted())
+        if (!channelIsActive(snapshot.getReference())) {
             throw new NotFoundException(String.format("Канал с id %s не найден", channelId));
-
-        try {
-            User user = channel.getUserRef().get().get().toObject(User.class);
-            if (user.isBanned() || user.isDeleted()) {
-                throw new NotFoundException(String.format("Канал с id %s не найден", channelId));
-            }
-        } catch (NullPointerException e) {
-            throw new UserNotFoundException();
         }
 
-        return channel;
+        return snapshot.toObject(Channel.class);
     }
 
     public Channel findByUserId(String uId) throws ExecutionException, InterruptedException, NotFoundException, NullPointerException {
-        DocumentSnapshot user = FirestoreClient.getFirestore()
+        DocumentSnapshot snapshot = FirestoreClient.getFirestore()
                 .collection("users")
                 .document(uId)
                 .get()
                 .get();
 
 
-        if (!user.exists()
-                || Boolean.TRUE.equals(user.getBoolean("deleted"))
-                || Boolean.TRUE.equals(user.getBoolean("banned")))
-            throw new UserNotFoundException();
-
-        Channel channel = ((DocumentReference) Objects.requireNonNull(user.get("channelRef")))
-                .get()
-                .get()
-                .toObject(Channel.class);
-
-        if (channel == null || channel.isDeleted())
+        DocumentReference channelRef = (DocumentReference) Objects.requireNonNull(snapshot.get("channelRef"));
+        if (!channelIsActive(channelRef)) {
             throw new NotFoundException("Канал не найден или удален");
+        }
 
-        return channel;
+//        if (!user.exists()
+//                || Boolean.TRUE.equals(user.getBoolean("deleted"))
+//                || Boolean.TRUE.equals(user.getBoolean("banned")))
+//            throw new UserNotFoundException();
+//
+//        Channel channel = ((DocumentReference) Objects.requireNonNull(user.get("channelRef")))
+//                .get()
+//                .get()
+//                .toObject(Channel.class);
+//
+//        if (channel == null || channel.isDeleted())
+//            throw new NotFoundException("Канал не найден или удален");
+
+        return channelRef.get().get().toObject(Channel.class);
     }
 
     public List<Channel> getAll() throws ExecutionException, InterruptedException {
@@ -166,7 +161,7 @@ public class ChannelService {
                 .toList();
     }
 
-    public boolean channelIsActive(DocumentReference channelRef) throws ExecutionException, InterruptedException, NullPointerException{
+    public boolean channelIsActive(DocumentReference channelRef) throws ExecutionException, InterruptedException, NullPointerException {
         DocumentSnapshot snapshot = channelRef.get().get();
         boolean profileIsActive = userService.userProfileIsActive(((DocumentReference) Objects.requireNonNull(snapshot.get("userRef"))));
         Channel channel = snapshot.toObject(Channel.class);
