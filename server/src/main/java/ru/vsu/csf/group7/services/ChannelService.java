@@ -149,14 +149,12 @@ public class ChannelService {
 
     private List<Channel> filter(List<Channel> channels) {
         return channels.stream()
-                .filter(channel -> {
-                    DocumentSnapshot snapshot = null;
+                .filter(ref -> {
                     try {
-                        snapshot = channel.getUserRef().get().get();
-                    } catch (InterruptedException | ExecutionException e) {
+                        return channelIsActive(ref.getUserRef());
+                    } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    return Boolean.FALSE.equals(snapshot.getBoolean("deleted")) && Boolean.FALSE.equals(snapshot.getBoolean("banned"));
                 })
                 .toList();
     }

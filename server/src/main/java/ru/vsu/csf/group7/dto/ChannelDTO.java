@@ -8,6 +8,7 @@ import lombok.Data;
 import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.Video;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Builder
@@ -19,8 +20,7 @@ public class ChannelDTO {
     private Timestamp createdAt;
     private List<VideoDTO> videos;
 
-    public static ChannelDTO fromChannel(Channel c) {
-        if (c == null) return null;
+    public static ChannelDTO fromChannel(@Nonnull Channel c) {
         return ChannelDTO.builder()
                 .name(c.getName())
                 .avatarURL(c.getAvatarURL())

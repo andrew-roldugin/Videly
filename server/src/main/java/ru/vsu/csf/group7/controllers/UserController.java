@@ -48,7 +48,7 @@ public class UserController implements IUserAPI {
             }
         } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.internalServerError().body(new MessageResponse("Произошла ошибка при получении пользовательских данных"));
