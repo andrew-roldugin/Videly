@@ -1,15 +1,30 @@
 package ru.vsu.csf.group7.entity;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.annotation.Exclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.vsu.csf.group7.http.request.CreateCommentRequest;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 @Data
+@NoArgsConstructor
 public class Comment {
     private String id;
-    private DocumentReference channelRef, videoRef;
     private String content;
-    private boolean isDeleted;
-    private LocalDateTime writtenOn;
+    private DocumentReference author;
+    private boolean isDeleted = false;
+    private Timestamp ts = Timestamp.now();
+
+    public Comment(CreateCommentRequest req) {
+        this.content = req.getContent();
+    }
+
+    @Exclude
+    public User getUserAccount() throws ExecutionException, InterruptedException {
+        return author.get().get().toObject(User.class);
+    }
 }
