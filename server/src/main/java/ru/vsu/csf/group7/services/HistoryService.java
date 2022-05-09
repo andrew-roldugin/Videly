@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.vsu.csf.group7.entity.History;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -21,7 +22,7 @@ public class HistoryService {
     }
 
     public List<History> getByUserId(int limit, int offset) throws ExecutionException, InterruptedException {
-        return userService.getUserRef()
+        return userService.getCurrentUserRef()
                 .collection("history")
                 .limit(limit)
                 .offset(offset)
@@ -29,14 +30,17 @@ public class HistoryService {
                 .get()
                 .getDocuments()
                 .stream()
-                .filter(queryDocumentSnapshot -> videoService.isVideoAvailable((DocumentReference) queryDocumentSnapshot.get("videoRef")))
+                .filter(queryDocumentSnapshot -> {
+                    DocumentReference videoRef = (DocumentReference) Objects.requireNonNull(queryDocumentSnapshot.get("videoRef"), "Не найдена ссылка на видео");
+                    return videoService.isVideoAvailable(videoRef);
+                })
                 .map(queryDocumentSnapshot -> queryDocumentSnapshot.toObject(History.class))
                 .toList();
     }
 
     public History addToHistory(String videoId) throws ExecutionException, InterruptedException {
         DocumentReference videoReference = videoService.getVideoReference(videoId);
-        DocumentReference documentReference = userService.getUserRef()
+        DocumentReference documentReference = userService.getCurrentUserRef()
                 .collection("history")
                 .document(videoId);
         documentReference.set(new History(videoReference), SetOptions.merge());

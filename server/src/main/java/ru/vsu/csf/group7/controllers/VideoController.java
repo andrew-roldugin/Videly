@@ -15,6 +15,7 @@ import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.VideoService;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -78,7 +79,10 @@ public class VideoController implements IVideoAPI {
     @GetMapping(value = "/find", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> findByQuery(@RequestBody SearchVideoQuery searchVideoQuery) {
         try {
-            return ResponseEntity.ok(videoService.findVideos(searchVideoQuery).stream().map(VideoDTO::fromVideo).toList());
+            List<VideoDTO> body = videoService.findVideos(searchVideoQuery).stream()
+                    .map(VideoDTO::fromVideo)
+                    .toList();
+            return ResponseEntity.ok(body);
         } catch (ExecutionException | InterruptedException e) {
             log.error(e.getLocalizedMessage());
             return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка при поиске видео"));

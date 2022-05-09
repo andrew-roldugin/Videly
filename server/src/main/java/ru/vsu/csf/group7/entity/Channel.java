@@ -17,14 +17,22 @@ import java.util.concurrent.ExecutionException;
 @NoArgsConstructor
 @Log4j2
 public class Channel {
+
     private String name;
+
     private DocumentReference userRef;
+
     @Exclude
     private User user;
+
     private String avatarURL, headerURL, about;
+
 //    private List<DocumentReference> videos;
+
     private boolean allowComments = true, allowRating = true;
+
     private boolean isDeleted = false;
+
     private Timestamp createdAt = Timestamp.now();
 
     public Channel(CreateChannelRequest request) {
@@ -35,7 +43,7 @@ public class Channel {
     }
 
     @Exclude
-    private User getUserAccount() {
+    private User getUser() {
         try {
             return this.user != null
                     ? this.user
@@ -48,7 +56,7 @@ public class Channel {
 
     @Exclude
     public boolean isActive() throws NullPointerException {
-        Objects.requireNonNull(getUserAccount(), "Учетная запись пользователя не найдена или удалена");
-        return user.userProfileIsActive();
+        Objects.requireNonNull(getUser(), "Учетная запись пользователя не найдена или удалена");
+        return !this.isDeleted && user.userProfileIsActive();
     }
 }

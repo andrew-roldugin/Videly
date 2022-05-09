@@ -26,7 +26,7 @@ public class CommentService {
 
     public Comment write(CreateCommentRequest req) {
         Comment comment = new Comment(req);
-        comment.setAuthor(userService.getUserRef());
+        comment.setAuthor(userService.getCurrentUserRef());
         DocumentReference reference = videoService.getVideoReference(req.getVideoId())
                 .collection("comments")
                 .document();

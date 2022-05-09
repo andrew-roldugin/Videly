@@ -4,17 +4,14 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.vsu.csf.group7.entity.Channel;
-import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.entity.Video;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
 import ru.vsu.csf.group7.http.request.CreateVideoRequest;
 import ru.vsu.csf.group7.http.request.SearchVideoQuery;
 import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -36,6 +33,9 @@ public class VideoService {
         Firestore firestore = FirestoreClient.getFirestore();
 
         DocumentReference channelReference = channelService.getChannelReference(request.getChannelId());
+        if (!channelReference.get().get().exists())
+            throw new NotFoundException("Канал не найден");
+
         video.setChannelRef(channelReference);
 
         DocumentReference documentReference = firestore.collection("videos").document();
@@ -56,7 +56,7 @@ public class VideoService {
 
         documentReference.update(req.toMap());
 
-        return Objects.requireNonNull(documentReference.get().get().toObject(Video.class));
+        return documentReference.get().get().toObject(Video.class);
     }
 
     public List<Video> findVideos(SearchVideoQuery q) throws ExecutionException, InterruptedException {
@@ -78,14 +78,17 @@ public class VideoService {
                 .get()
                 .get();
 
-        return queryDocumentSnapshots.toObjects(Video.class);
+        List<Video> videos = queryDocumentSnapshots
+                .toObjects(Video.class).stream()
+                .filter(Video::isAvailable)
+                .toList();
+
+        return videos;
     }
 
     public List<Video> getAllVideosInChannel(String channelId, int limit, int offset) throws ExecutionException, InterruptedException {
-//        String id = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-
         DocumentReference channelReference = channelService.getChannelReference(channelId);
-        if (!channelService.channelIsActive(channelReference))
+        if (!channelService.channelIsActive(channelReference, null))
             throw new NotFoundException("Канал не найден или удален");
 
         return channelReference
@@ -95,30 +98,31 @@ public class VideoService {
                 .get()
                 .get()
                 .getDocuments()
-                .stream().map(queryDocumentSnapshot -> ((DocumentReference) queryDocumentSnapshot.get("ref")))
+                .stream()
+                .map(queryDocumentSnapshot -> ((DocumentReference) queryDocumentSnapshot.get("ref")))
+                .filter(Objects::nonNull)
                 .map(ref -> {
                     try {
-                        return ref.get().get();
-                    } catch (InterruptedException | ExecutionException ignored) {
-                    }
+                        return ref.get().get().toObject(Video.class); // ссылка -> snapshot
+                    } catch (InterruptedException | ExecutionException ignored) {}
                     return null;
                 })
                 .filter(Objects::nonNull)
-                .map(obj -> obj.toObject(Video.class))
                 .toList();
     }
 
     public Video findVideoById(String videoId) throws ExecutionException, InterruptedException, NotFoundException {
         DocumentReference videoReference = getVideoReference(videoId);
+        if (!isVideoAvailable(videoReference)) {
+            throw new NotFoundException("Видео не найдено или удалено");
+        }
+
         DocumentSnapshot snapshot = videoReference
                 .get()
                 .get();
 
         videoReference.update("views", FieldValue.increment(1));
 
-        if (!isVideoAvailable(videoReference)) {
-            throw new NotFoundException("Видео не найдено или удалено");
-        }
         return snapshot.toObject(Video.class);
     }
 
@@ -137,7 +141,7 @@ public class VideoService {
                     .commit();
         } else {
             Map<String, Object> extraInfo = new HashMap<>();
-            extraInfo.put("deletedBy", userService.getUserRef());
+            extraInfo.put("deletedBy", userService.getCurrentUserRef());
             extraInfo.put("reason", "");
             extraInfo.put("timestamp", Timestamp.now());
             reference.update(Map.of("deleted", true, "extra", extraInfo));
@@ -154,10 +158,9 @@ public class VideoService {
     }
 
     public void updateRating(String videoId) throws ExecutionException, InterruptedException {
-//        String id = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        DocumentReference document = userService.getUserRef()
-                .collection("additional_user_info")
-                .document("likes");
+        DocumentReference document = userService.getCurrentUserRef()
+                .collection("likes")
+                .document("user_likes");
 
         DocumentReference videoReference = getVideoReference(videoId);
 
@@ -175,16 +178,24 @@ public class VideoService {
         document.set(Map.of(videoId, !v), SetOptions.merge());
     }
 
-    public boolean isVideoAvailable(DocumentReference reference) {
+    public boolean isVideoAvailable(@Nonnull DocumentReference reference) {
         try {
             Video video = reference.get().get().toObject(Video.class);
-            if (!video.isVisible() || video.isDeleted())
-                return false;
-            if (!channelService.channelIsActive(((DocumentReference) Objects.requireNonNull(reference.get().get().get("channelRef")))))
-                return false;
-        } catch (NullPointerException | ExecutionException | InterruptedException e) {
+            Objects.requireNonNull(video, "Видео не найдено или удалено");
+            return video.isAvailable();
+        } catch (InterruptedException | ExecutionException e) {
             return false;
         }
-        return true;
+//        try {
+//            Video video = reference.get().get().toObject(Video.class);
+//            if (!video.isVisible() || video.isDeleted())
+//                return false;
+//            DocumentReference channelRef = (DocumentReference) Objects.requireNonNull(reference.get().get().get("channelRef"), "Видео должно принадлежать какому-либо каналу"); //ссылка на канал
+//            if (!channelService.channelIsActive(channelRef, null))
+//                return false;
+//        } catch (NullPointerException | ExecutionException | InterruptedException e) {
+//            return false;
+//        }
+//        return true;
     }
 }

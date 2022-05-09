@@ -1,19 +1,19 @@
 package ru.vsu.csf.group7.services;
 
+import com.google.api.client.util.Maps;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.csf.group7.entity.Channel;
-import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
-import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 import ru.vsu.csf.group7.http.request.SearchChannelQuery;
 import ru.vsu.csf.group7.http.request.UpdateChannelRequest;
 
-import javax.print.Doc;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +23,12 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class ChannelService {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public ChannelService(UserService userService) {
+        this.userService = userService;
+    }
 
     public Channel create(CreateChannelRequest request) throws ExecutionException, InterruptedException {
         Channel channel = new Channel(request);
@@ -34,63 +38,47 @@ public class ChannelService {
                 .collection("channels")
                 .document();
 
-        DocumentReference userRef = userService.getUserRef();
-
-//        DocumentReference channelsReference =  userRef
-//                .collection("channels")
-//                .document();
+        DocumentReference userRef = userService.getCurrentUserRef();
 
         channel.setUserRef(userRef);
 
         firestore.batch()
                 .create(channelsReference, channel)
                 .update(userRef, Map.of("channelRef", channelsReference))
-                .commit()
-                .get();
+                .commit();
 
         return channel;
     }
 
     public Channel findByChannelId(String channelId) throws ExecutionException, InterruptedException, NotFoundException {
-        // /users/vvnKSVK0hffCIfdZrruYRY2Gh0B2/channels/H34VgIs05UN2VjygYMsC
         DocumentSnapshot snapshot = getChannelReference(channelId)
                 .get()
                 .get();
 
-        if (!channelIsActive(snapshot.getReference())) {
+        Channel[] channel = new Channel[1];
+        if (!channelIsActive(snapshot.getReference(), channel)) {
             throw new NotFoundException(String.format("Канал с id %s не найден", channelId));
         }
 
-        return snapshot.toObject(Channel.class);
+        return channel[0];
     }
 
-    public Channel findByUserId(String uId) throws ExecutionException, InterruptedException, NotFoundException, NullPointerException {
-        DocumentSnapshot snapshot = FirestoreClient.getFirestore()
+    public Channel findByUserId(String userId) throws ExecutionException, InterruptedException, NotFoundException, NullPointerException {
+        DocumentSnapshot userSnapshot = FirestoreClient.getFirestore()
                 .collection("users")
-                .document(uId)
+                .document(userId)
                 .get()
                 .get();
 
+        DocumentReference channelRef = (DocumentReference) Objects.requireNonNull(userSnapshot.get("channelRef"), "Пользователь еще не создал канал");
 
-        DocumentReference channelRef = (DocumentReference) Objects.requireNonNull(snapshot.get("channelRef"));
-        if (!channelIsActive(channelRef)) {
+        Channel[] channel = new Channel[1];
+
+        if (!channelIsActive(channelRef, channel)) {
             throw new NotFoundException("Канал не найден или удален");
         }
 
-//        if (!user.exists()
-//                || Boolean.TRUE.equals(user.getBoolean("deleted"))
-//                || Boolean.TRUE.equals(user.getBoolean("banned")))
-//            throw new UserNotFoundException();
-//
-//        Channel channel = ((DocumentReference) Objects.requireNonNull(user.get("channelRef")))
-//                .get()
-//                .get()
-//                .toObject(Channel.class);
-//
-//        if (channel == null || channel.isDeleted())
-//            throw new NotFoundException("Канал не найден или удален");
-
-        return channelRef.get().get().toObject(Channel.class);
+        return channel[0];
     }
 
     public List<Channel> getAll() throws ExecutionException, InterruptedException {
@@ -105,20 +93,26 @@ public class ChannelService {
 
     public void deleteByChannelId(String channelId, boolean fullDelete) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
-        DocumentReference channelRef = getChannelReference(channelId);
+        DocumentReference channelRef = getChannelReference(channelId); //ссылка на канал
 
+        DocumentReference userRef = (DocumentReference) Objects.requireNonNull(channelRef.get().get().get("userRef")); //ссылка на автора видео
+
+        HashMap<String, Object> map = Maps.newHashMap();
+        map.put("channelRef", null);
         WriteBatch writeBatch = firestore.batch()
-                .update((DocumentReference) Objects.requireNonNull(channelRef.get().get().get("userRef")), Map.of("channelRef", ""));
+                .update(userRef, map);
+
         if (fullDelete) {
-            writeBatch.delete(channelRef).commit();
+            writeBatch.delete(channelRef);
         } else {
             Map<String, Object> extraInfo = new HashMap<>();
-            extraInfo.put("deletedBy", userService.getUserRef());
+            extraInfo.put("deletedBy", userService.getCurrentUserRef());
             extraInfo.put("reason", "");
             extraInfo.put("timestamp", Timestamp.now());
 
-            writeBatch.update(channelRef, Map.of("deleted", true, "extra", extraInfo)).commit();
+            writeBatch.update(channelRef, Map.of("deleted", true, "extra", extraInfo));
         }
+        writeBatch.commit();
     }
 
     public Channel updateById(UpdateChannelRequest req, String channelId) throws ExecutionException, InterruptedException {
@@ -149,20 +143,20 @@ public class ChannelService {
 
     private List<Channel> filter(List<Channel> channels) {
         return channels.stream()
-                .filter(ref -> {
+                .filter(channel -> {
                     try {
-                        return channelIsActive(ref.getUserRef());
-                    } catch (ExecutionException | InterruptedException e) {
-                        throw new RuntimeException(e);
+                        return channel.isActive();
+                    } catch (NullPointerException e) {
+                        return false;
                     }
                 })
                 .toList();
     }
 
-    public boolean channelIsActive(DocumentReference channelRef) throws ExecutionException, InterruptedException, NullPointerException {
+    public boolean channelIsActive(DocumentReference channelRef, Channel[] channel) throws ExecutionException, InterruptedException, NullPointerException {
         DocumentSnapshot snapshot = channelRef.get().get();
-        boolean profileIsActive = userService.userProfileIsActive(((DocumentReference) Objects.requireNonNull(snapshot.get("userRef"))));
-        Channel channel = snapshot.toObject(Channel.class);
-        return profileIsActive && !Objects.requireNonNull(channel).isDeleted();
+//        boolean userProfileIsActive = userService.userProfileIsActive(((DocumentReference) Objects.requireNonNull(snapshot.get("userRef"))));
+        channel[0] = snapshot.toObject(Channel.class);
+        return channel[0] != null && channel[0].isActive();
     }
 }

@@ -23,7 +23,7 @@ public class SubscriptionService {
     }
 
     public Subscription subscribe(String channelId) throws ExecutionException, InterruptedException {
-        DocumentReference documentReference = userService.getUserRef()
+        DocumentReference documentReference = userService.getCurrentUserRef()
                 .collection("subscriptions")
                 .document();
 
@@ -44,7 +44,7 @@ public class SubscriptionService {
     }
 
     public List<Subscription> getMySubscriptions(int limit, int offset) throws ExecutionException, InterruptedException {
-       return userService.getUserRef()
+       return userService.getCurrentUserRef()
                 .collection("subscriptions")
                 .offset(offset)
                 .limit(limit)
