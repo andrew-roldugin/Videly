@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.cloud.Timestamp;
 import lombok.Builder;
 import lombok.Data;
+import ru.vsu.csf.group7.entity.ERole;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.entity.UserDetailsImpl;
 
@@ -22,7 +23,7 @@ public class UserDTO {
     private String email;
 //    private String password;
     private Timestamp createdAt;
-    private List<?> authorities;
+    private ERole role;
 
     public static UserDTO fromUser(User user) {
         return UserDTO.builder()
@@ -30,8 +31,9 @@ public class UserDTO {
                 .email(user.getEmail())
                 .isBanned(user.isBanned())
                 .isAccountDeleted(user.isDeleted())
-                .createdAt(user.getCreationTS())
-                .authorities(Arrays.asList(user.getGrantedAuthorities().toArray()))
+                .createdAt(user.getCreatedAt())
+//                .authorities(Arrays.asList(user.getGrantedAuthorities().toArray()))
+                .role(user.getRole())
                 .build();
     }
 }

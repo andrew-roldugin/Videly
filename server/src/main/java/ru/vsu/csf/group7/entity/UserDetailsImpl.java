@@ -3,6 +3,7 @@ package ru.vsu.csf.group7.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.annotation.Exclude;
 import com.google.firebase.auth.UserRecord;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,43 +45,36 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
     }
 
     @Override
-    @JsonIgnore
     public String getUsername() {
         return this.email;
     }
 
     @Override
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
     @Override
-    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

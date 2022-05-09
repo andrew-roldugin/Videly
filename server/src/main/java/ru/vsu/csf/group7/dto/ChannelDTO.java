@@ -10,6 +10,7 @@ import ru.vsu.csf.group7.entity.Video;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @Data
@@ -20,7 +21,8 @@ public class ChannelDTO {
     private Timestamp createdAt;
     private List<VideoDTO> videos;
 
-    public static ChannelDTO fromChannel(@Nonnull Channel c) {
+    public static ChannelDTO fromChannel(Channel c) {
+        Objects.requireNonNull(c, "Канал не найден или удален");
         return ChannelDTO.builder()
                 .name(c.getName())
                 .avatarURL(c.getAvatarURL())

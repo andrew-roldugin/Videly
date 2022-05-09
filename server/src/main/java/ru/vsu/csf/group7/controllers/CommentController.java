@@ -13,6 +13,7 @@ import ru.vsu.csf.group7.http.request.UpdateCommentRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.CommentService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -30,14 +31,14 @@ public class CommentController implements ICommentAPI {
     }
 
     @Override
-    @PostMapping("/write")
-    public ResponseEntity<CommentDTO> writeNewComment(CreateCommentRequest request) {
+    @PostMapping(value = "/write", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<CommentDTO> writeNewComment(@Valid @RequestBody CreateCommentRequest request) {
         CommentDTO commentDTO = CommentDTO.fromComment(commentService.write(request));
         return ResponseEntity.ok(commentDTO);
     }
 
     @Override
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<Object> getAllComments(String videoId, int limit, int offset) {
         try {
             List<CommentDTO> comments = commentService.getAllComments(videoId, limit, offset).stream()
@@ -53,8 +54,8 @@ public class CommentController implements ICommentAPI {
     }
 
     @Override
-    @PatchMapping("/edit")
-    public ResponseEntity<Object> update(UpdateCommentRequest request) {
+    @PatchMapping(value = "/edit", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> update(@Valid @RequestBody UpdateCommentRequest request) {
         try {
             Comment comment = commentService.update(request);
             return ResponseEntity.ok(CommentDTO.fromComment(comment));
@@ -67,7 +68,7 @@ public class CommentController implements ICommentAPI {
     }
 
     @Override
-    @DeleteMapping("/delete")
+    @DeleteMapping(value = "/delete", produces = "application/json")
     public ResponseEntity<MessageResponse> delete(String commentId, String videoId, boolean fullDelete) {
         try {
             commentService.delete(videoId, commentId, fullDelete);

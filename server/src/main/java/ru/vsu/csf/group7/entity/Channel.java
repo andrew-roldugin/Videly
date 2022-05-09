@@ -2,18 +2,25 @@ package ru.vsu.csf.group7.entity;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.annotation.Exclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 @Data
 @NoArgsConstructor
+@Log4j2
 public class Channel {
     private String name;
     private DocumentReference userRef;
+    @Exclude
+    private User user;
     private String avatarURL, headerURL, about;
 //    private List<DocumentReference> videos;
     private boolean allowComments = true, allowRating = true;
@@ -25,6 +32,23 @@ public class Channel {
         this.avatarURL = request.getAvatarURL();
         this.about = request.getAbout();
         this.headerURL = request.getHeaderURL();
-//        this.userRef = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRef();
+    }
+
+    @Exclude
+    private User getUserAccount() {
+        try {
+            return this.user != null
+                    ? this.user
+                    : (this.user = userRef.get().get().toObject(User.class));
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    @Exclude
+    public boolean isActive() throws NullPointerException {
+        Objects.requireNonNull(getUserAccount(), "Учетная запись пользователя не найдена или удалена");
+        return user.userProfileIsActive();
     }
 }

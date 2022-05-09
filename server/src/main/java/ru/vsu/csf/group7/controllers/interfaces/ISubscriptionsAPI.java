@@ -29,8 +29,8 @@ public interface ISubscriptionsAPI {
             }
     )
     ResponseEntity<Object> getUserSubscriptions(
-            @Parameter(description = "ID пользователя", required = true) @PathVariable("userId") String userId,
-            BindingResult bindingResult
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "offset", defaultValue = "0") int offset
     );
 
     @Operation(
@@ -42,8 +42,5 @@ public interface ISubscriptionsAPI {
             }
     )
     ResponseEntity<Object> subscribe(
-            @Parameter(description = "ID пользователя", required = true) @PathVariable("userId") String userId,
-            @Parameter(description = "ID канала", required = true) @RequestParam("channelId") String channelId,
-            BindingResult bindingResult
-    );
+            @Parameter(description = "ID канала", required = true) @RequestParam("channelId") String channelId);
 }

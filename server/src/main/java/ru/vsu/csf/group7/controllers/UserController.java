@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vsu.csf.group7.controllers.interfaces.IUserAPI;
 import ru.vsu.csf.group7.dto.ChannelDTO;
 import ru.vsu.csf.group7.dto.UserDTO;
+import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
@@ -24,6 +25,7 @@ import ru.vsu.csf.group7.services.UserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -42,14 +44,19 @@ public class UserController implements IUserAPI {
         try {
             User userByEmail = userService.getUserData(principal.getName());
             if (userByEmail != null) {
-                //Channel channel = channelService.getByRef(userByEmail.getId());
-                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), ChannelDTO.fromChannel(userByEmail.getChannel()));
+                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), null);
+
+                Channel channel = userByEmail.getChannel();
+                if (channel != null) {
+                    response.setChannelInfo(ChannelDTO.fromChannel(channel));
+                }
+
                 return ResponseEntity.ok(response);
             }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
         } catch (NotFoundException | NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getMessage());
         }
         return ResponseEntity.internalServerError().body(new MessageResponse("Произошла ошибка при получении пользовательских данных"));
     }

@@ -48,20 +48,22 @@ public class UserService {
         if (userByEmail.isDeleted())
             throw new UserNotFoundException();
 
-        try {
-            Channel channel = ((DocumentReference) Objects.requireNonNull(queryDocumentSnapshot.get("channelRef")))
-                    .get()
-                    .get()
-                    .toObject(Channel.class);
-
-            userByEmail.setChannel(channel);
-        } catch (NullPointerException | ClassCastException e) {
-//            throw new NotFoundException("Канал не найден");
-        }
+//        try {
+//            Channel channel = ((DocumentReference) Objects.requireNonNull(queryDocumentSnapshot.get("channelRef")))
+//                    .get()
+//                    .get()
+//                    .toObject(Channel.class);
+//
+//            userByEmail.setChannel(channel);
+//        } catch (NullPointerException | ClassCastException e) {
+////            throw new NotFoundException("Канал не найден");
+//        }
         return userByEmail;
     }
 
     private User mapToUser(DocumentSnapshot queryDocumentSnapshot) {
+        return queryDocumentSnapshot.toObject(User.class);
+        /*
         User u = new User();
         u.setId(queryDocumentSnapshot.getId());
 //        u.setRef(queryDocumentSnapshot.getReference());
@@ -77,7 +79,7 @@ public class UserService {
                 .map(String::valueOf)
                 .map(SimpleGrantedAuthority::new)
                 .toList();
-        u.setGrantedAuthorities(collect);
+//        u.setGrantedAuthorities(collect);
 
 //        HashMap<String, Object> m = new HashMap<String, Object>();
 //        m.put("userRef", queryDocumentSnapshot.getReference());
@@ -122,6 +124,8 @@ public class UserService {
 //                .getDocuments();
 
         return u;
+
+         */
     }
 
     private QueryDocumentSnapshot findUser(String login) throws ExecutionException, InterruptedException, UserNotFoundException {

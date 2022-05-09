@@ -1,17 +1,13 @@
 package ru.vsu.csf.group7.services;
 
 import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.SetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.csf.group7.entity.History;
-import ru.vsu.csf.group7.entity.Video;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 @Service
 public class HistoryService {
@@ -26,7 +22,7 @@ public class HistoryService {
 
     public List<History> getByUserId(int limit, int offset) throws ExecutionException, InterruptedException {
         return userService.getUserRef()
-                .collection("user_history")
+                .collection("history")
                 .limit(limit)
                 .offset(offset)
                 .get()
@@ -40,11 +36,11 @@ public class HistoryService {
 
     public History addToHistory(String videoId) throws ExecutionException, InterruptedException {
         DocumentReference videoReference = videoService.getVideoReference(videoId);
-        DocumentReference user_history = userService.getUserRef()
-                .collection("user_history")
+        DocumentReference documentReference = userService.getUserRef()
+                .collection("history")
                 .document(videoId);
-        user_history.set(new History(videoReference), SetOptions.merge());
+        documentReference.set(new History(videoReference), SetOptions.merge());
 
-        return user_history.get().get().toObject(History.class);
+        return documentReference.get().get().toObject(History.class);
     }
 }
