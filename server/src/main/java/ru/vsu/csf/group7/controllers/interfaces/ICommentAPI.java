@@ -27,7 +27,7 @@ public interface ICommentAPI {
                     @ApiResponse(responseCode = "500", description = "Произошла неизвестная ошибка", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<CommentDTO> writeNewComment(@Valid @RequestBody CreateCommentRequest request);
+    ResponseEntity<Object> writeNewComment(@Valid @RequestBody CreateCommentRequest request);
 
     @Operation(
             summary = "Загрузить все комментарии под видео",

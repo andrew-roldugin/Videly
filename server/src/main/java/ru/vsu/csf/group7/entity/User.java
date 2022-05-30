@@ -1,10 +1,8 @@
 package ru.vsu.csf.group7.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.annotation.Exclude;
-import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
 import com.google.firebase.auth.UserRecord;
 import lombok.Data;
 import lombok.NoArgsConstructor;

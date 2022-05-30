@@ -14,6 +14,7 @@ import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.CommentService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -32,18 +33,25 @@ public class CommentController implements ICommentAPI {
 
     @Override
     @PostMapping(value = "/write", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CommentDTO> writeNewComment(@Valid @RequestBody CreateCommentRequest request) {
-        CommentDTO commentDTO = CommentDTO.fromComment(commentService.write(request));
-        return ResponseEntity.ok(commentDTO);
+    public ResponseEntity<Object> writeNewComment(@Valid @RequestBody CreateCommentRequest request) {
+        try {
+            CommentDTO commentDTO = CommentDTO.fromComment(commentService.write(request));
+            return ResponseEntity.ok(commentDTO);
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка"));
+        }
     }
 
     @Override
     @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<Object> getAllComments(String videoId, int limit, int offset) {
         try {
-            List<CommentDTO> comments = commentService.getAllComments(videoId, limit, offset).stream()
-                    .map(CommentDTO::fromComment)
-                    .toList();
+            List<CommentDTO> comments = new ArrayList<>();
+            for (Comment comment : commentService.getAllComments(videoId, limit, offset)) {
+                CommentDTO commentDTO = CommentDTO.fromComment(comment);
+                comments.add(commentDTO);
+            }
             return ResponseEntity.ok(comments);
         } catch (NullPointerException e) {
             return ResponseEntity.notFound().build();

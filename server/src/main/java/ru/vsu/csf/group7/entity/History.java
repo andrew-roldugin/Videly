@@ -16,13 +16,14 @@ import java.util.concurrent.ExecutionException;
 @Data
 @NoArgsConstructor
 public class History {
+
+    private DocumentReference videoRef;
+    private Timestamp ts;
+
     public History(DocumentReference videoRef) {
         this.videoRef = videoRef;
         this.ts = Timestamp.now();
     }
-
-    private DocumentReference videoRef;
-    private Timestamp ts;
 
     @Exclude
     public Video getVideo() throws ExecutionException, InterruptedException {

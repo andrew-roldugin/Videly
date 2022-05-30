@@ -23,8 +23,13 @@ public class Comment {
         this.content = req.getContent();
     }
 
+//    @Exclude
+//    public User getUserAccount() throws ExecutionException, InterruptedException {
+//        return author.get().get().toObject(User.class);
+//    }
+
     @Exclude
-    public User getUserAccount() throws ExecutionException, InterruptedException {
-        return author.get().get().toObject(User.class);
+    public Channel getChannelInfo() throws ExecutionException, InterruptedException {
+        return this.author.get().get().toObject(Channel.class);
     }
 }
