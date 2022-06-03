@@ -4,7 +4,7 @@ import 'package:client/http/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:client/domain/models/login_form_data.dart';
-import 'package:client/screens/homepage_screen.dart';
+import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/widgets/common/app_title.dart';
 import 'package:flutter/services.dart';
@@ -194,14 +194,14 @@ class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
                   if (_validate()) {
                     await GetIt.instance<AuthenticationService>()
                         .signIn(formData: _formData)
-                        .then((value) {
+                        .then((value) => {
                           if (value) {
                             Navigator.pushReplacementNamed(
                               context,
-                              HomepageScreen.routeName,
-                            );
+                              MainScreen.routeName,
+                            )
                           }
-                        },
+                        }
                     );
                   }
                 },
@@ -234,7 +234,7 @@ class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, HomepageScreen.routeName);
+              Navigator.pushReplacementNamed(context, MainScreen.routeName);
             },
           ),
         ],

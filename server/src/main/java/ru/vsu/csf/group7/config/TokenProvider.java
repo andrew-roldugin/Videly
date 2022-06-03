@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import ru.vsu.csf.group7.entity.User;
 
 @Component
 @Log4j2

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:client/screens/homepage_screen.dart';
+import 'package:client/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/signin_screen.dart';
@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2)).then((value) {
-      var screen = FirebaseAuth.instance.currentUser != null ? const HomepageScreen() : const SignInScreen();
+      var screen = FirebaseAuth.instance.currentUser != null ? const MainScreen() : const SignInScreen();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => screen),

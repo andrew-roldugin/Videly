@@ -1,0 +1,1759 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Videly REST API",
+        "description": "REST API сервер для мобильного приложения Videly",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://localhost:8443",
+            "description": "Generated server url"
+        }
+    ],
+    "tags": [
+        {
+            "name": "VideoController",
+            "description": "Модуль обработки видео"
+        },
+        {
+            "name": "AuthController",
+            "description": "Аутентификация"
+        },
+        {
+            "name": "ChannelController",
+            "description": "Модуль обработки каналов"
+        },
+        {
+            "name": "UserController",
+            "description": "Модуль управления аккаунтами пользователей"
+        },
+        {
+            "name": "HistoryController",
+            "description": "Модуль работы с историей просмотров"
+        },
+        {
+            "name": "SubscriptionsController",
+            "description": "Модуль управления платными подписками на каналы"
+        },
+        {
+            "name": "RoomController",
+            "description": "Модуль управления комнатами для совместного просмотра"
+        }
+    ],
+    "paths": {
+        "/api/video/uploadNew": {
+            "post": {
+                "tags": [
+                    "VideoController"
+                ],
+                "summary": "Загрузка нового видео в хранилище",
+                "operationId": "uploadNewVideo",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVideoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Видео успешно загружено",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VideoDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{userId}": {
+            "get": {
+                "tags": [
+                    "SubscriptionsController"
+                ],
+                "summary": "Загрузить подписки пользователя",
+                "operationId": "getUserSubscriptions",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные получены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubscriptionDTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ничего не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "SubscriptionsController"
+                ],
+                "summary": "Подписаться на канал",
+                "operationId": "subscribe",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "channelId",
+                        "in": "query",
+                        "description": "ID канала",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ничего не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/history/history/{userId}": {
+            "get": {
+                "tags": [
+                    "HistoryController"
+                ],
+                "summary": "Загрузка истории просмотров",
+                "description": "Загрузка истории просмотров конкреного пользоавтеля",
+                "operationId": "getViewsHistory",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные загружены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/HistoryDTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ничего не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "HistoryController"
+                ],
+                "summary": "Добавить новое видео в историю просмотров",
+                "operationId": "addToHistory",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "string",
+                                "description": "ID видео"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HistoryDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/channel/createNew": {
+            "post": {
+                "tags": [
+                    "ChannelController"
+                ],
+                "summary": "Создание нового канала",
+                "operationId": "createNewChannel",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateChannelRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Новый канал успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChannelDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Произошла неизвестная ошибка при создании канала",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "AuthController"
+                ],
+                "summary": "Регистрация пользователя",
+                "description": "Процесс регистрации пользователя",
+                "operationId": "register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignupRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Регистрация прошла успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JWTTokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Произошла ошибка при регистрации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Произошла неизвестная ошибка при регистрации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "AuthController"
+                ],
+                "summary": "Авторизация пользователя",
+                "description": "Процесс авторизации пользователя и получение для него пары токенов",
+                "operationId": "signIn",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Авторизация прошла успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JWTTokenSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Произошла ошибка при авторизации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Произошла неизвестная ошибка при авторизации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/video/update/{videoId}": {
+            "patch": {
+                "tags": [
+                    "VideoController"
+                ],
+                "summary": "Обновление данных о видео",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID обновляемого видео",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVideoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Данные о видео успешно обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VideoDTO"
+                                }
+                            },
+                            "multipart/form-data": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VideoDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            },
+                            "multipart/form-data": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Видео не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            },
+                            "multipart/form-data": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            },
+                            "multipart/form-data": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/user/{userId}": {
+            "delete": {
+                "tags": [
+                    "UserController"
+                ],
+                "summary": "Удаление аккаунта",
+                "operationId": "deleteUserAccount",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID удаляемого аккаунта",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "UserController"
+                ],
+                "summary": "Обновление пользовательских данных",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID обновляемого пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Данные обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/channel/update/{channelId}": {
+            "patch": {
+                "tags": [
+                    "ChannelController"
+                ],
+                "summary": "Обновление данных канала",
+                "operationId": "update_1",
+                "parameters": [
+                    {
+                        "name": "channelId",
+                        "in": "path",
+                        "description": "ID обновляемого кананла",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateChannelRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Данные о канале успешно обновлены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChannelDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Канал не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/video/{videoId}": {
+            "get": {
+                "tags": [
+                    "VideoController"
+                ],
+                "summary": "Загрузка данных о видео",
+                "description": "Загрузка данных, когда пользователь открывает какое-либо видео\nА также обновление количества просмотров",
+                "operationId": "loadVideo",
+                "parameters": [
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID загружаемого видео",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные загружены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VideoDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Видео не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/video/find": {
+            "get": {
+                "tags": [
+                    "VideoController"
+                ],
+                "summary": "Поиск видео по различным критериям",
+                "operationId": "findByQuery",
+                "parameters": [
+                    {
+                        "name": "searchVideoQuery",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/SearchVideoQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Есть данные по запросу",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/VideoDTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ничего не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/user/": {
+            "get": {
+                "tags": [
+                    "UserController"
+                ],
+                "summary": "Загрузка данных об аккаунте пользователя",
+                "operationId": "myAccount",
+                "responses": {
+                    "200": {
+                        "description": "Данные загружены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountDetailsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/room/{roomId}": {
+            "get": {
+                "tags": [
+                    "RoomController"
+                ],
+                "summary": "Закрыть комнату",
+                "operationId": "close",
+                "parameters": [
+                    {
+                        "name": "roomId",
+                        "in": "path",
+                        "description": "ID комнаты",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комната не найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/room/": {
+            "get": {
+                "tags": [
+                    "RoomController"
+                ],
+                "summary": "Создать комнату для совместного просмотра",
+                "operationId": "create",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "ID пользователя-автора комнаты",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/channel/{channelId}": {
+            "get": {
+                "tags": [
+                    "ChannelController"
+                ],
+                "summary": "Загрузка данных о канале",
+                "description": "Загрузка данных, когда пользователь переходит на какой-либо канал",
+                "operationId": "load",
+                "parameters": [
+                    {
+                        "name": "channelId",
+                        "in": "path",
+                        "description": "ID кананла",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные загружены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChannelDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Канал не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/channel/find": {
+            "get": {
+                "tags": [
+                    "ChannelController"
+                ],
+                "summary": "Поиск канала",
+                "operationId": "findByQuery_1",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Поисковый запрос",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/SearchChannelQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Есть данные по запросу",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChannelDTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ничего не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/video/delete/{videoId}": {
+            "delete": {
+                "tags": [
+                    "VideoController"
+                ],
+                "summary": "Удаление видео",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "videoId",
+                        "in": "path",
+                        "description": "ID удаляемого видео",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Видео успешно удалено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Видео не найдено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/channel/delete/{channelId}": {
+            "delete": {
+                "tags": [
+                    "ChannelController"
+                ],
+                "summary": "Удаление канала",
+                "operationId": "delete_1",
+                "parameters": [
+                    {
+                        "name": "channelId",
+                        "in": "path",
+                        "description": "ID удаляемого канала",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Канал успешно удален",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Канал не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CommentDTO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "writtenOn": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "VideoDTO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "previewURL": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "views": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "length": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "allowComments": {
+                        "type": "boolean"
+                    },
+                    "allowRating": {
+                        "type": "boolean"
+                    },
+                    "videoURL": {
+                        "type": "string"
+                    },
+                    "comments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentDTO"
+                        }
+                    }
+                }
+            },
+            "MessageResponse": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "CreateVideoRequest": {
+                "required": [
+                    "Название видео",
+                    "Ссылка (id) на канал, куда загружается видео",
+                    "Ссылка (url) на видеофайл"
+                ],
+                "type": "object",
+                "properties": {
+                    "Название видео": {
+                        "type": "string"
+                    },
+                    "Ссылка (url) на изображение": {
+                        "type": "string"
+                    },
+                    "Описание к видео": {
+                        "type": "string"
+                    },
+                    "Разрешить оценивать видео": {
+                        "type": "boolean"
+                    },
+                    "Разрешить комментировать видео": {
+                        "type": "boolean"
+                    },
+                    "Ссылка (id) на канал, куда загружается видео": {
+                        "type": "string"
+                    },
+                    "Ссылка (url) на видеофайл": {
+                        "type": "string"
+                    }
+                },
+                "description": "Параметры для загрузки нового видео"
+            },
+            "HistoryDTO": {
+                "type": "object",
+                "properties": {
+                    "videos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VideoDTO"
+                        }
+                    },
+                    "ts": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ChannelDTO": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatarURL": {
+                        "type": "string"
+                    },
+                    "headerURL": {
+                        "type": "string"
+                    },
+                    "about": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "$ref": "#/components/schemas/Timestamp"
+                    },
+                    "videos": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VideoDTO"
+                        }
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "object",
+                "properties": {
+                    "seconds": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nanos": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "CreateChannelRequest": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatarURL": {
+                        "type": "string"
+                    },
+                    "headerURL": {
+                        "type": "string"
+                    },
+                    "about": {
+                        "type": "string"
+                    }
+                }
+            },
+            "JWTTokenResponse": {
+                "type": "object",
+                "properties": {
+                    "accessToken": {
+                        "type": "string"
+                    },
+                    "refreshToken": {
+                        "type": "string"
+                    },
+                    "customToken": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SignupRequest": {
+                "required": [
+                    "confirmPassword",
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "maxLength": 30,
+                        "minLength": 6,
+                        "type": "string"
+                    },
+                    "confirmPassword": {
+                        "maxLength": 30,
+                        "minLength": 6,
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "USER",
+                            "MODERATOR"
+                        ]
+                    }
+                }
+            },
+            "JWTTokenSuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "tokens": {
+                        "$ref": "#/components/schemas/JWTTokenResponse"
+                    }
+                },
+                "description": "Токены, сгенерированные для пользователя"
+            },
+            "LoginRequest": {
+                "required": [
+                    "login",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateVideoRequest": {
+                "required": [
+                    "title"
+                ],
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Новое название видео"
+                    },
+                    "previewURL": {
+                        "type": "string",
+                        "description": "Ссылка на новое превью видео"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Новое описание видео"
+                    },
+                    "allowComments": {
+                        "type": "boolean",
+                        "description": "Разрешить комментирование"
+                    },
+                    "allowRating": {
+                        "type": "boolean",
+                        "description": "Разрешить оценивать ролики"
+                    }
+                }
+            },
+            "SimpleGrantedAuthority": {
+                "type": "object",
+                "properties": {
+                    "authority": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserDTO": {
+                "required": [
+                    "email"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "$ref": "#/components/schemas/Timestamp"
+                    },
+                    "authorities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SimpleGrantedAuthority"
+                        }
+                    }
+                },
+                "description": "Создатель комнаты"
+            },
+            "UpdateUserRequest": {
+                "required": [
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "maxLength": 2147483647,
+                        "minLength": 6,
+                        "type": "string",
+                        "description": "Новый пароль"
+                    }
+                },
+                "description": "Запрос на обновление пользовательских данных"
+            },
+            "UpdateChannelRequest": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Новое имя канала"
+                    },
+                    "about": {
+                        "type": "string",
+                        "description": "Новое описание канала"
+                    },
+                    "avatarURL": {
+                        "type": "string",
+                        "description": "Ссылка на новое изображение канала"
+                    },
+                    "headerURL": {
+                        "type": "string",
+                        "description": "Ссылка на новую шапку канала"
+                    },
+                    "allowComments": {
+                        "type": "boolean",
+                        "description": "Разрешить комментирование"
+                    },
+                    "allowRating": {
+                        "type": "boolean",
+                        "description": "Разрешить оценивать ролики"
+                    }
+                }
+            },
+            "SearchVideoQuery": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Название видео для поиска"
+                    }
+                }
+            },
+            "AccountDetailsResponse": {
+                "type": "object",
+                "properties": {
+                    "userInfo": {
+                        "$ref": "#/components/schemas/UserDTO"
+                    },
+                    "channelInfo": {
+                        "$ref": "#/components/schemas/ChannelDTO"
+                    }
+                }
+            },
+            "SubscriptionDTO": {
+                "type": "object",
+                "properties": {
+                    "channels": {
+                        "type": "array",
+                        "description": "Каналы на которые подписан пользователь",
+                        "items": {
+                            "$ref": "#/components/schemas/ChannelDTO"
+                        }
+                    }
+                }
+            },
+            "RoomDTO": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "description": "Пароль комнаты"
+                    },
+                    "video": {
+                        "$ref": "#/components/schemas/VideoDTO"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/UserDTO"
+                    },
+                    "participants": {
+                        "type": "array",
+                        "description": "Подключенные участники комнаты",
+                        "items": {
+                            "$ref": "#/components/schemas/ChannelDTO"
+                        }
+                    }
+                }
+            },
+            "SearchChannelQuery": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "description": "Запрос на поиск каналов по разным критериям"
+            }
+        },
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 public class LoginRequest {
 
     @NotEmpty(message = "Поле логин не может быть пустым")
-    private String login;
+    private String email;
     @NotEmpty(message = "Поле пароль не может быть пустым")
     private String password;
 }

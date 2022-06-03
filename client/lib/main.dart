@@ -1,6 +1,7 @@
+import 'package:client/controllers/tab_controller.dart';
 import 'package:client/http/auth.dart';
 import 'package:client/http/custom_http_client.dart';
-import 'package:client/screens/homepage_screen.dart';
+import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/screens/splash_screen.dart';
@@ -15,7 +16,7 @@ void main() async {
     SplashScreen.routeName: (BuildContext context) => const SplashScreen(),
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
-    HomepageScreen.routeName: (BuildContext context) => const HomepageScreen(),
+    MainScreen.routeName: (BuildContext context) => const MainScreen()
   };
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ void main() async {
 
   GetIt.instance.registerSingleton<AuthenticationService>(AuthenticationService(FirebaseAuth.instance));
   GetIt.instance.registerSingleton<CustomHttpClient>(CustomHttpClient());
+  GetIt.instance.registerSingleton<MyTabController>(MyTabController());
 
   // await WidgetsFlutterBinding.ensureInitialized();
   // ByteData data = await
@@ -74,7 +76,7 @@ class VidelyApp extends StatelessWidget {
           ),
         ),
       ),
-      debugShowCheckedModeBanner: false, // todo скрыть надпись об отладке
+      debugShowCheckedModeBanner: false, // скрыть надпись об отладке
     );
   }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.services.CustomUserDetailsService;
 import ru.vsu.csf.group7.services.UserService;
 
@@ -39,12 +40,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             FirebaseToken firebaseToken;
             if (StringUtils.hasText(jwt) && (firebaseToken = provider.validateToken(jwt)) != null) {
                 String email = provider.getUserLoginFromToken(firebaseToken);
-                UserDetails user = service.findUserByEmail(email);
-                if (user == null) return;
+                UserDetails userDetails = new UserDetailsImpl(service.findUserByEmail(email));
+//                if (userDetails == null) return;
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        user,
+                        userDetails,
                         null,
-                        user.getAuthorities()
+                        userDetails.getAuthorities()
                 );
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

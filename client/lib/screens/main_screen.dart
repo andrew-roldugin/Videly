@@ -1,16 +1,63 @@
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:client/controllers/tab_controller.dart';
+import 'package:client/domain/models/tab.dart';
+import 'package:client/widgets/navBar/nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/io_client.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 import '../http/auth.dart';
 
-class HomepageScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   static const String routeName = '/homepage';
 
-  const HomepageScreen({Key? key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+
+}
+
+class _MainScreenState extends StateMVC {
+
+  _MainScreenState() {
+    _controller = GetIt.I<MyTabController>();
+    add(_controller);
+  }
+
+  late MyTabController _controller;
+
+  Future<bool> _onWillPop() async {
+    return _controller.switchTabOnBackButtonClicked();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        child: Scaffold(
+          // Stack размещает один элемент над другим
+          // Проще говоря, каждый экран будет находится
+          // поверх другого, мы будем только переключаться между ними
+          body: Stack(children: <Widget>[
+            _controller.createTabPage(TabItem.HOME),
+            _controller.createTabPage(TabItem.SUBSCRIPTIONS),
+            _controller.createTabPage(TabItem.HISTORY),
+            _controller.createTabPage(TabItem.ACCOUNT),
+          ]),
+          bottomNavigationBar: MyBottomNavigationBar(controller: _controller,),
+        ),
+        onWillPop: _onWillPop);
+  }
+
+
+}
+
+class MainScreenTest extends StatelessWidget {
+  const MainScreenTest({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +117,7 @@ class _TstWgtState extends State<TstWgt> {
     setState(() {});
   }
 
-  void _logout(){
+  void _logout() {
     var dio = GetIt.instance<AuthenticationService>();
     dio.signOut();
   }

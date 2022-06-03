@@ -1,7 +1,7 @@
 import 'package:client/http/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:client/domain/models/register_form_data.dart';
-import 'package:client/screens/homepage_screen.dart';
+import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/widgets/common/app_title.dart';
 import 'package:client/widgets/common/orientation_mode.dart';
@@ -126,7 +126,7 @@ class _RegisterFormState extends State<RegisterForm>
     var authService = GetIt.instance<AuthenticationService>();
     authService.signUp(formData: _formData).then((value) {
       if (value) {
-        Navigator.pushReplacementNamed(context, HomepageScreen.routeName);
+        Navigator.pushReplacementNamed(context, MainScreen.routeName);
       }
     });
   }
@@ -263,7 +263,7 @@ class _RegisterFormState extends State<RegisterForm>
                 ),
                 onPressed: () {
                   Navigator.pushReplacementNamed(
-                      context, HomepageScreen.routeName);
+                      context, MainScreen.routeName);
                 },
               ),
             ],

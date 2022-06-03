@@ -16,9 +16,9 @@ public class SignupRequest {
     @Email(message = "Проверьте поле \"email\"")
     @NotBlank(message = "Поле email обязательно для заполнения")
     private String email;
-
-    @NotBlank(message = "Поле никнейм обязательно для заполнения")
-    private String nickname;
+//
+//    @NotBlank(message = "Поле никнейм обязательно для заполнения")
+//    private String nickname;
 
     @NotEmpty(message = "Поле \"пароль\" обязательно для заполнения")
     @Size(min = 6, max = 30)
