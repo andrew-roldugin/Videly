@@ -1,3 +1,4 @@
+import 'package:client/widgets/subscription/subsription_list_widget.dart';
 import 'package:flutter/widgets.dart';
 
 class SubscriptionsPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        //mainAxisAlignment: MainAxisAlignment.center,
         children: const [Text("Подписки")],
       ),
     );

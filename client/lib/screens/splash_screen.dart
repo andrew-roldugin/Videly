@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2)).then((value) {
-      var screen = FirebaseAuth.instance.currentUser != null ? MainScreen() : const SignInScreen();
+      var screen = FirebaseAuth.instance.currentUser != null ? const MainScreen() : const SignInScreen();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => screen),

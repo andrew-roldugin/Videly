@@ -19,7 +19,7 @@ class SubscriptionsTab extends Tab {
 }
 
 class HistoryTab extends Tab {
-  const HistoryTab() : super(name: 'История', icon: Icons.subscriptions_rounded);
+  const HistoryTab() : super(name: 'История', icon: Icons.video_collection);
 }
 
 class AccountTab extends Tab {
