@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 void main() async {
-  final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
+  final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder> {
     SplashScreen.routeName: (BuildContext context) => const SplashScreen(),
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
@@ -48,7 +48,7 @@ class VidelyApp extends StatelessWidget {
       title: "Videly",
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           headline1: TextStyle(
             fontFamily: "Roboto",
             fontSize: 70.0,
@@ -73,6 +73,12 @@ class VidelyApp extends StatelessWidget {
             fontFamily: "Roboto",
             fontWeight: FontWeight.w500,
             decoration: TextDecoration.underline,
+          ),
+          headline3: TextStyle(
+            fontSize: 16.0,
+            color: Colors.black,
+            fontFamily: "Roboto",
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
