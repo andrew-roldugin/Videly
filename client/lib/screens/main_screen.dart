@@ -13,7 +13,7 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import '../http/auth.dart';
 
 class MainScreen extends StatefulWidget {
-  static const String routeName = '/homepage';
+  static const String routeName = '/main';
 
   const MainScreen({Key? key}) : super(key: key);
 
@@ -52,8 +52,6 @@ class _MainScreenState extends StateMVC {
         ),
         onWillPop: _onWillPop);
   }
-
-
 }
 
 class MainScreenTest extends StatelessWidget {
