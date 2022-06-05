@@ -1,10 +1,16 @@
 import 'package:client/domain/models/tab.dart';
+import 'package:client/screens/video_playback_screen.dart';
 import 'package:client/widgets/navBar/tab_navigator.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
+import '../pages/account_page.dart';
+import '../pages/history_page.dart';
+import '../pages/home_page.dart';
+import '../pages/subscriptions_page.dart';
+
 class MyTabController extends ControllerMVC {
-  final Map<TabItem, List<Object>> _navigatorKeys = {
+  final _navigatorKeys = {
     TabItem.HOME: [GlobalKey<NavigatorState>(), const HomeTab()],
     TabItem.HISTORY: [GlobalKey<NavigatorState>(), const HistoryTab()],
     TabItem.SUBSCRIPTIONS: [
@@ -50,20 +56,44 @@ class MyTabController extends ControllerMVC {
     }
   }
 
-  // Создание одного из экранов - посты, альбомы или задания
+  // Создание вкладок
   Widget createTabPage(TabItem tabItem) {
     return _buildOffstageNavigator(tabItem);
   }
 
   Widget _buildOffstageNavigator(TabItem tabItem) {
+    Widget child;
+    switch (tabItem) {
+      case TabItem.HOME:
+        {
+          child = const HomePage();
+          break;
+        }
+      case TabItem.SUBSCRIPTIONS:
+        {
+          child = const SubscriptionsPage();
+          break;
+        }
+      case TabItem.ACCOUNT:
+        {
+          child = const AccountPage();
+          break;
+        }
+      case TabItem.HISTORY:
+        {
+          child = const HistoryPage();
+          break;
+        }
+    }
     return Offstage(
       // Offstage работает следующим образом:
       // если это не текущий выбранный элемент, то его нужно скрыть
       offstage: currentTab != tabItem,
-      child: TabNavigator(
-        navigatorKey: _navigatorKeys[tabItem]?.first as GlobalKey<NavigatorState>,
-        tabItem: tabItem,
-      ),
+      child: child,
+      // child: TabNavigator(
+      //   navigatorKey: _navigatorKeys[tabItem]?.first as GlobalKey<NavigatorState>,
+      //   tabItem: tabItem,
+      // ),
     );
   }
 
@@ -83,6 +113,9 @@ class MyTabController extends ControllerMVC {
   IconData _tabIcon(TabItem item) => (_navigatorKeys[item]?.last as Tab).icon;
 
   Color _tabColor(TabItem item) {
+    // var k = GlobalKey<NavigatorState>();
+    // var w = k.currentWidget;
+
     return currentTab == item
         ? (_navigatorKeys[item]?.last as Tab).selectedItemColor
         : (_navigatorKeys[item]?.last as Tab).unselectedItemColor;

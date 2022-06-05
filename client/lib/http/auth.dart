@@ -34,7 +34,7 @@ class AuthenticationService {
   //1
   Future<bool> signIn({required LoginFormData formData}) async {
     try {
-      var dio = GetIt.instance<CustomHttpClient>().dio;
+      var dio = GetIt.instance<CustomHttpClient>().dioInstance;
 
       return await dio.post("/auth/login", data: formData.toJson()).then(
         (res) async {
@@ -110,7 +110,7 @@ class AuthenticationService {
   //2
   Future<bool> signUp({required RegisterFormData formData}) async {
     try {
-      var dio = GetIt.instance<CustomHttpClient>().dio;
+      var dio = GetIt.instance<CustomHttpClient>().dioInstance;
 
       return await dio.post("/auth/register", data: formData.toJson()).then(
         (res) async {

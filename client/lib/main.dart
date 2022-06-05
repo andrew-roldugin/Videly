@@ -5,6 +5,8 @@ import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/screens/splash_screen.dart';
+import 'package:client/screens/video_playback_screen.dart';
+import 'package:client/services/auth_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,13 +18,14 @@ void main() async {
     SplashScreen.routeName: (BuildContext context) => const SplashScreen(),
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
-    MainScreen.routeName: (BuildContext context) => const MainScreen()
+    MainScreen.routeName: (BuildContext context) => const MainScreen(),
+    VideoPlaybackScreen.routeName: (BuildContext context) => const VideoPlaybackScreen()
   };
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  GetIt.instance.registerSingleton<AuthenticationService>(AuthenticationService(FirebaseAuth.instance));
+  GetIt.instance.registerSingleton<AuthService>(AuthService(FirebaseAuth.instance));
   GetIt.instance.registerSingleton<CustomHttpClient>(CustomHttpClient());
   GetIt.instance.registerSingleton<MyTabController>(MyTabController());
 
@@ -37,13 +40,14 @@ void main() async {
 
 class VidelyApp extends StatelessWidget {
   final Map<String, WidgetBuilder> routes;
-
+  static final _navigatorKey = GlobalKey<NavigatorState>();
   const VidelyApp({required this.routes, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: routes,
+      navigatorKey: _navigatorKey,
       initialRoute: SplashScreen.routeName,
       title: "Videly",
       theme: ThemeData(

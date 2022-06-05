@@ -21,7 +21,7 @@ class CustomHttpClient {
     setup();
   }
 
-  Dio get dio => _dio;
+  Dio get dioInstance => _dio;
 
   void setup() {
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

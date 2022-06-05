@@ -12,12 +12,22 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: VideoWidget());
-    // return SafeArea(
-    //   child: Row(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [] //const [Text("Аккаунт")],
-    //   ),
-    // );
+    // return VideoWidget();
+    
+    /*
+    return SafeArea(
+      child: SizedBox(
+        //height: MediaQuery.of(context).size.height * .4,
+        child: VideoWidget(),
+      ),
+    );
+    */
+
+    return SafeArea(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [Text("Аккаунт")],
+      ),
+    );
   }
 }
