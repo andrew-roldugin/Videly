@@ -24,14 +24,15 @@ class CustomHttpClient {
   Dio get dioInstance => _dio;
 
   void setup() {
-    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
+    // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (client) {
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    // };
     _dio.options.contentType = "application/json";
     // _dio.options.baseUrl = "https://45.8.248.185:8443/api";
-    _dio.options.baseUrl = "https://192.168.43.203:8443/api";
+    // _dio.options.baseUrl = "https://192.168.43.203:8443/api";
+    _dio.options.baseUrl = "https://videly-server.herokuapp.com/api";
     _dio.options.responseType = ResponseType.json;
     FirebaseAuth.instance.currentUser?.getIdToken().then((value) {
       _dio.options.headers[HttpHeaders.authorizationHeader] =

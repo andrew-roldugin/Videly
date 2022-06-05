@@ -1,4 +1,7 @@
+import 'package:client/screens/splash_screen.dart';
+import 'package:client/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class AccountPage extends StatefulWidget {
@@ -202,7 +205,9 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        print("Выйти из аккаунта");
+                        GetIt.I<AuthService>().signOut().then((value){
+                          Navigator.pushNamed(context, SplashScreen.routeName);
+                        });
                       },
                       color: const Color.fromRGBO(65, 75, 178, 1),
                       child: Text(

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:client/domain/models/login_form_data.dart';
@@ -18,9 +19,10 @@ class AuthService {
       return await dio.post("/auth/login", data: formData.toJson()).then(
         (res) async {
           if (res.statusCode == 200) {
-            var token = res.data['customToken'];
+            var token = res.data['tokens']['customToken'];
             return token;
           }
+          print(res);
         },
       ).then((token) async {
         await _firebaseAuth.signInWithCustomToken(token);
@@ -64,5 +66,16 @@ class AuthService {
 
   bool isGuest() {
     return _firebaseAuth.currentUser!.isAnonymous;
+  }
+
+  void resetPassword({required String email}) {
+    _firebaseAuth
+        .sendPasswordResetEmail(email: email)
+        .then((value) => log("Письмо отправлено"));
+  }
+
+
+  void signInAnonymously() {
+    _firebaseAuth.signInAnonymously();
   }
 }

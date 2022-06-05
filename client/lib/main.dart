@@ -12,20 +12,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
-  final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder> {
+  final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
     SplashScreen.routeName: (BuildContext context) => const SplashScreen(),
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
     MainScreen.routeName: (BuildContext context) => const MainScreen(),
-    VideoPlaybackScreen.routeName: (BuildContext context) => const VideoPlaybackScreen()
+    VideoPlaybackScreen.routeName: (BuildContext context) =>
+        const VideoPlaybackScreen()
   };
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  GetIt.instance.registerSingleton<AuthService>(AuthService(FirebaseAuth.instance));
+  GetIt.instance
+      .registerSingleton<AuthService>(AuthService(FirebaseAuth.instance));
   GetIt.instance.registerSingleton<CustomHttpClient>(CustomHttpClient());
   GetIt.instance.registerSingleton<MyTabController>(MyTabController());
 
@@ -35,12 +38,19 @@ void main() async {
   // SecurityContext context = SecurityContext.defaultContext;
   // context.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
-  runApp(VidelyApp(routes: _routes));
+  var app = Provider(
+      create: (ctx) {
+        return null;
+      },
+      child: VidelyApp(routes: _routes));
+
+  runApp(app);
 }
 
 class VidelyApp extends StatelessWidget {
   final Map<String, WidgetBuilder> routes;
   static final _navigatorKey = GlobalKey<NavigatorState>();
+
   const VidelyApp({required this.routes, Key? key}) : super(key: key);
 
   @override
@@ -52,7 +62,7 @@ class VidelyApp extends StatelessWidget {
       title: "Videly",
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headline1: TextStyle(
             fontFamily: "Roboto",
             fontSize: 70.0,

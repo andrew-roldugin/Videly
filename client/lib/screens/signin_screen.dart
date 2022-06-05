@@ -1,21 +1,25 @@
-import 'dart:developer';
-
-import 'package:client/http/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:client/domain/models/login_form_data.dart';
-import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signup_screen.dart';
+import 'package:client/services/auth_service.dart';
+import 'package:client/widgets/auth/login_form.dart';
 import 'package:client/widgets/common/app_title.dart';
-import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:validators/validators.dart' as validator;
-import 'package:client/widgets/common/orientation_mode.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   static const String routeName = "/signin";
+
+  @override
+  Widget build(BuildContext context) {
+    return const _LoginWidget();
+  }
+}
+
+class _LoginWidget extends StatelessWidget {
+  const _LoginWidget({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,47 +38,21 @@ class SignInScreen extends StatelessWidget {
                 ),
               ),
               child: Column(
-                children: const [
-                  _LoginScreenHeader(
+                children: [
+                  const _LoginScreenHeader(
                     message: "Войти на Videly",
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16, 100, 16, 70),
-                    child: LoginForm(),
+                    padding: const EdgeInsets.fromLTRB(16, 100, 16, 70),
+                    child: LoginForm.create(),
                   ),
-                  _BottomBar()
+                  //_BottomBar()
                 ],
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class _BottomBar extends StatelessWidget {
-  const _BottomBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Нет аккаунта?",
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-        TextButton(
-          child: Text(
-            "Создать",
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-          onPressed: () {
-            Navigator.pushNamed(context, SignUpScreen.routeName);
-          },
-        )
-      ],
     );
   }
 }
@@ -96,198 +74,6 @@ class _LoginScreenHeader extends StatelessWidget {
           Text(message, style: Theme.of(context).textTheme.headline2),
         ],
       ),
-    );
-  }
-}
-
-class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
-
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> with PortraitStatefulModeMixin {
-  final LoginFormData _formData = LoginFormData();
-
-  final _formKey = GlobalKey<FormState>();
-
-  bool _validate() {
-    final isValid = _formKey.currentState?.validate() ?? false;
-    if (!isValid) {
-      return false;
-    }
-    _formKey.currentState?.save();
-    return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    blockRotation();
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            //autofocus: true,
-            //autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (v) => v != null && validator.isEmail(v)
-                ? null
-                : "Введите корректный Email",
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              prefixIcon: const Icon(Icons.account_circle),
-              // label: const Text(
-              //   "Логин",
-              //   style: TextStyle(color: Colors.black),
-              // ),
-              hintText: "Email",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onChanged: (v) => _formData.login = v,
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          TextFormField(
-            //autovalidateMode: AutovalidateMode.onUserInteraction,
-            keyboardType: TextInputType.visiblePassword,
-            validator: (v) => v == null || v.length < 6
-                ? "Длина пароля должна составлять не менее 6 символов"
-                : null,
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              prefixIcon: const Icon(Icons.lock),
-              // label: const Text(
-              //   "Пароль",
-              //   style: TextStyle(color: Colors.black),
-              // ),
-              helperText: "Не менее 6 символов",
-              hintText: "Пароль",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            obscureText: true,
-            onChanged: (v) => _formData.password = v,
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MaterialButton(
-                height: 35,
-                color: const Color.fromRGBO(65, 75, 178, 1),
-                child: const Text(
-                  "Войти",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  if (_validate()) {
-                    await GetIt.instance<AuthenticationService>()
-                        .signIn(formData: _formData)
-                        .then((value) => {
-                          if (value) {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              MainScreen.routeName,
-                            )
-                          }
-                        }
-                    );
-                  }
-                },
-              ),
-              MaterialButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (ctx) => const ResetPasswordForm());
-                },
-                child: Text(
-                  "Забыли пароль?",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              )
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Center(
-              child: Text("или", style: Theme.of(context).textTheme.bodyText1),
-            ),
-          ),
-          MaterialButton(
-            //minWidth: double.infinity,
-            height: 35,
-            color: const Color.fromRGBO(65, 75, 178, 1),
-            child: const Text(
-              "Войти как гость",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, MainScreen.routeName);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ResetPasswordForm extends StatefulWidget {
-  const ResetPasswordForm({Key? key}) : super(key: key);
-
-  @override
-  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
-}
-
-class _ResetPasswordFormState extends State<ResetPasswordForm> {
-  final _emailInputController = TextEditingController();
-
-  void _resetPassword(String email) {
-    FirebaseAuth.instance
-        .sendPasswordResetEmail(email: email)
-        .then((value) => log("Письмо отправлено"));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Column(children: [
-        TextFormField(
-          validator: (v) => v != null && validator.isEmail(v)
-              ? null
-              : "Введите корректный Email",
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            prefixIcon: const Icon(Icons.account_circle),
-            hintText: "Email",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onChanged: (v) => _emailInputController.text = v,
-        ),
-        MaterialButton(
-          child: const Text(
-            "Отправить письмо",
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: () => _resetPassword(_emailInputController.value.text),
-        )
-      ]),
     );
   }
 }

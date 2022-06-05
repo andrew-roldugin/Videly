@@ -10,7 +10,6 @@ import 'package:client/screens/signin_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
-
 class _SplashScreenViewModel {
   final BuildContext context;
   late final AuthService _authService;
@@ -22,9 +21,8 @@ class _SplashScreenViewModel {
 
   void checkAuth() async {
     Future.delayed(const Duration(seconds: 2)).then((value) {
-      var nextScreen = _authService.checkAuth()
-          ? const MainScreen()
-          : const SignInScreen();
+      var nextScreen =
+          _authService.checkAuth() ? const MainScreen() : const SignInScreen();
 
       Navigator.pushReplacement(
         context,
@@ -41,9 +39,11 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(create: (ctx) => _SplashScreenViewModel(ctx),
+    return Provider(
+      create: (ctx) => _SplashScreenViewModel(ctx),
       child: const _SplashScreenWidget(),
-      lazy: false,);
+      lazy: false,
+    );
   }
 }
 
@@ -58,10 +58,7 @@ class _SplashScreenWidget extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height - 50,
+          height: MediaQuery.of(context).size.height - 50,
           decoration: const BoxDecoration(
             color: Colors.blue,
             borderRadius: BorderRadius.only(
