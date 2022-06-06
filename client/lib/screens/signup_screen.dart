@@ -1,4 +1,5 @@
 import 'package:client/http/auth.dart';
+import 'package:client/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:client/domain/models/register_form_data.dart';
 import 'package:client/screens/main_screen.dart';
@@ -123,7 +124,7 @@ class _RegisterFormState extends State<RegisterForm>
   }
 
   void _signUp(ctx) {
-    var authService = GetIt.instance<AuthenticationService>();
+    var authService = GetIt.instance<AuthService>();
     authService.signUp(formData: _formData).then((value) {
       if (value) {
         Navigator.pushReplacementNamed(context, MainScreen.routeName);

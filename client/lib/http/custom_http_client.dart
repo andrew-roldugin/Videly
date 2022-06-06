@@ -34,9 +34,14 @@ class CustomHttpClient {
     // _dio.options.baseUrl = "https://192.168.43.203:8443/api";
     _dio.options.baseUrl = "https://videly-server.herokuapp.com/api";
     _dio.options.responseType = ResponseType.json;
-    FirebaseAuth.instance.currentUser?.getIdToken().then((value) {
-      _dio.options.headers[HttpHeaders.authorizationHeader] =
-          "Bearer " + value.toString();
-    });
+
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler){
+      FirebaseAuth.instance.currentUser?.getIdToken().then((value) {
+        options.headers[HttpHeaders.authorizationHeader] =
+            "Bearer " + value.toString();
+      });
+      handler.next(options);
+    }));
+
   }
 }

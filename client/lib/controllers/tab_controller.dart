@@ -1,6 +1,4 @@
 import 'package:client/domain/models/tab.dart';
-import 'package:client/screens/video_playback_screen.dart';
-import 'package:client/widgets/navBar/tab_navigator.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
@@ -76,7 +74,7 @@ class MyTabController extends ControllerMVC {
         }
       case TabItem.ACCOUNT:
         {
-          child = const AccountPage();
+          child = AccountPage.create();
           break;
         }
       case TabItem.HISTORY:

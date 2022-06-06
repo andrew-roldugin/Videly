@@ -22,7 +22,7 @@ class AuthService {
             var token = res.data['tokens']['customToken'];
             return token;
           }
-          print(res);
+          //print(res);
         },
       ).then((token) async {
         await _firebaseAuth.signInWithCustomToken(token);
@@ -40,13 +40,14 @@ class AuthService {
       var dio = GetIt.instance<CustomHttpClient>().dioInstance;
 
       return await dio.post("/auth/register", data: formData.toJson()).then(
-        (res) async {
+        (res) {
           if (res.statusCode == 200) {
-            var token = res.data['refreshToken'];
+            var token = res.data['tokens']['customToken'];
             return token;
           }
         },
       ).then((token) async {
+        await _firebaseAuth.signInWithCustomToken(token);
         return true;
       });
     } on SocketException catch (_) {
@@ -73,7 +74,6 @@ class AuthService {
         .sendPasswordResetEmail(email: email)
         .then((value) => log("Письмо отправлено"));
   }
-
 
   void signInAnonymously() {
     _firebaseAuth.signInAnonymously();

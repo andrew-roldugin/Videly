@@ -1,12 +1,15 @@
+import 'package:client/app_view_model.dart';
 import 'package:client/controllers/tab_controller.dart';
-import 'package:client/http/auth.dart';
 import 'package:client/http/custom_http_client.dart';
+import 'package:client/screens/create_channel.dart';
 import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
 import 'package:client/screens/splash_screen.dart';
 import 'package:client/screens/video_playback_screen.dart';
 import 'package:client/services/auth_service.dart';
+import 'package:client/services/channel_service.dart';
+import 'package:client/services/user_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +23,7 @@ void main() async {
     SignInScreen.routeName: (BuildContext context) => const SignInScreen(),
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
     MainScreen.routeName: (BuildContext context) => const MainScreen(),
+    CreateChannelScreen.routeName: (BuildContext context) => const CreateChannelScreen(),
     VideoPlaybackScreen.routeName: (BuildContext context) =>
         const VideoPlaybackScreen()
   };
@@ -31,7 +35,8 @@ void main() async {
       .registerSingleton<AuthService>(AuthService(FirebaseAuth.instance));
   GetIt.instance.registerSingleton<CustomHttpClient>(CustomHttpClient());
   GetIt.instance.registerSingleton<MyTabController>(MyTabController());
-
+  GetIt.instance.registerSingleton<UserService>(UserService());
+  GetIt.instance.registerSingleton<ChannelService>(ChannelService());
   // await WidgetsFlutterBinding.ensureInitialized();
   // ByteData data = await
   // rootBundle.load('assets/raw/certificate.pem');
@@ -40,12 +45,13 @@ void main() async {
 
   var app = Provider(
       create: (ctx) {
-        return null;
+        return AppViewModel();
       },
       child: VidelyApp(routes: _routes));
 
   runApp(app);
 }
+
 
 class VidelyApp extends StatelessWidget {
   final Map<String, WidgetBuilder> routes;

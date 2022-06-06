@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:client/resources/resources.dart';
 import 'package:client/screens/main_screen.dart';
+import 'package:client/screens/signin_screen.dart';
 import 'package:client/services/auth_service.dart';
 import 'package:client/widgets/common/app_title.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:client/screens/signin_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
