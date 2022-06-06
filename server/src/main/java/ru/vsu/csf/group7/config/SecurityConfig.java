@@ -42,8 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().requiresChannel().anyRequest().requiresSecure()
                 .and().authorizeRequests().antMatchers(SecurityConstants.SIGN_UP_URLS).permitAll()
                 .antMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+                .antMatchers("/api/comment/all", "/api/video/find", "/api/video/**").permitAll()
                 //.antMatchers("/api/test/**").permitAll()
-                //.mvcMatchers(HttpMethod.PATCH, "/api/test/patch").authenticated()
+                .mvcMatchers(HttpMethod.GET,  "/api/channel/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

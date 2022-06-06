@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.vsu.csf.group7.entity.User;
 import ru.vsu.csf.group7.entity.UserDetailsImpl;
-import ru.vsu.csf.group7.exceptions.NotFoundException;
 import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.SignupRequest;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
@@ -154,15 +153,17 @@ public class UserService {
         }
     }
 
-    public void updateUserById(UpdateUserRequest request, String userId) throws FirebaseAuthException {
+    public User updateUserById(UpdateUserRequest request, String userId) throws FirebaseAuthException, ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
 
         String password = request.getPassword();
         FirebaseAuth.getInstance().getUser(userId).updateRequest().setPassword(password);
-        dbFirestore
+        DocumentReference document = dbFirestore
                 .collection("users")
-                .document(userId)
+                .document(userId);
+        document
                 .update(Map.of("password", password));
+        return document.get().get().toObject(User.class);
     }
 
     public DocumentReference getCurrentUserRef() {

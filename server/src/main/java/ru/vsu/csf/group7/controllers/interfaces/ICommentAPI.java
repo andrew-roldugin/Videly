@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,8 @@ import ru.vsu.csf.group7.http.response.MessageResponse;
 import javax.validation.Valid;
 
 public interface ICommentAPI {
+
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Написать новый комментарий",
             responses = {
@@ -44,6 +47,7 @@ public interface ICommentAPI {
     );
 
 
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Обновление комментария",
             responses = {
@@ -57,7 +61,7 @@ public interface ICommentAPI {
     )
     ResponseEntity<Object> update(@Valid @RequestBody UpdateCommentRequest request);
 
-
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Удалить комментарий",
             responses = {

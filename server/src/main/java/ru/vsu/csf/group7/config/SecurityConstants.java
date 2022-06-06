@@ -3,6 +3,8 @@ package ru.vsu.csf.group7.config;
 public class SecurityConstants {
 
     public static final String SIGN_UP_URLS = "/api/auth/**";
+    public static final String OPEN_UP_URLS = "/api/comment/all";
+
 
     public static final String SECRET = "SECRET_KEY";
     public static final String TOKEN_PREFIX = "Bearer ";

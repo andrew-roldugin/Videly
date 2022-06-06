@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 @NoArgsConstructor
 @Log4j2
 public class Channel {
+    private String id;
 
     private String name;
 
@@ -27,7 +28,8 @@ public class Channel {
 
     private String avatarURL, headerURL, about;
 
-//    private List<DocumentReference> videos;
+    @Exclude
+    private List<Video> videos;
 
     private boolean allowComments = true, allowRating = true;
 

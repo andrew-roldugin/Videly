@@ -17,8 +17,9 @@ import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 
 @Tag(name = "VideoController", description = "Модуль обработки видео")
-@SecurityRequirement(name = "bearer_token")
+
 public interface IVideoAPI {
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", description = "Видео успешно загружено", content = @Content(schema = @Schema(implementation = VideoDTO.class))),
@@ -55,6 +56,7 @@ public interface IVideoAPI {
     )
     ResponseEntity<Object> findByQuery(@RequestBody SearchVideoQuery searchVideoQuery);
 
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Обновление данных о видео",
             responses = {
@@ -66,10 +68,11 @@ public interface IVideoAPI {
     )
     ResponseEntity<Object> update(@Parameter(description = "ID обновляемого видео", required = true) @PathVariable("videoId") String videoId, @RequestBody UpdateVideoRequest req);
 
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Удаление видео",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Видео успешно удалено", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "200", description = "Видео успешно удалено", content = @Content(array = @ArraySchema(schema = @Schema(implementation = VideoDTO.class)))),
                     @ApiResponse(responseCode = "404", description = "Видео не найдено", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
@@ -78,4 +81,31 @@ public interface IVideoAPI {
             @Parameter(description = "ID удаляемого видео", required = true) @PathVariable("videoId") String videoId,
             @Parameter(description = "Полностью удалить данные о видео?") @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete
     );
+
+
+    @SecurityRequirement(name = "bearer_token")
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Некорректные данные", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Видео не найдено", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+            },
+            summary = "Лайкнуть видео"
+    )
+    ResponseEntity<Object> likeVideo(@Parameter(description = "ID видео", required = true) @RequestParam("videoId") String videoId);
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(schema = @Schema(implementation = VideoDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Некорректные данные", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+            },
+            summary = "Загрузить список видео на данном канале"
+    )
+    ResponseEntity<Object> loadVideosOnChannel(
+            @Parameter(description = "ID канала", required = true) @RequestParam("channelId") String channelId,
+            @Parameter(description = "Размер выборки") @RequestParam(value = "limit", defaultValue = "25") int limit,
+            @Parameter(description = "Смещение") @RequestParam(value = "offset",defaultValue = "0") int offset
+    );
+
 }

@@ -39,7 +39,7 @@ class RestApiApplicationTests {
 //            Object videos = snapshot.get("videos");
 //            Channel channel = snapshot.toObject(Channel.class);
 
-            Object videoList = videoService.getAllVideosInChannel("ndeP2aIsp9Sxul7MNkI8", 25, 0);
+            Object videoList = videoService.getAllVideosOnChannel("ndeP2aIsp9Sxul7MNkI8", 25, 0);
             System.out.printf("");
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);

@@ -1,14 +1,10 @@
 package ru.vsu.csf.group7.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
 import lombok.Builder;
 import lombok.Data;
 import ru.vsu.csf.group7.entity.Channel;
-import ru.vsu.csf.group7.entity.Video;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,19 +12,31 @@ import java.util.Objects;
 @Data
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChannelDTO {
+    private String id;
     private String name;
     private String avatarURL, headerURL, about;
     private Timestamp createdAt;
-    private List<VideoDTO> videos;
+//    private List<VideoDTO> videos;
+    private boolean allowComments = true, allowRating = true;
+    private boolean isDeleted = false;
 
-    public static ChannelDTO fromChannel(Channel c) {
+    public static ChannelDTO fromChannel(Channel c){
         Objects.requireNonNull(c, "Канал не найден или удален");
-        return ChannelDTO.builder()
+        ChannelDTOBuilder builder = ChannelDTO.builder()
+                .id(c.getId())
                 .name(c.getName())
                 .avatarURL(c.getAvatarURL())
                 .headerURL(c.getHeaderURL())
                 .createdAt(c.getCreatedAt())
                 .about(c.getAbout())
+                .isDeleted(c.isDeleted())
+                .allowComments(c.isAllowComments())
+                .allowRating(c.isAllowRating());
+
+//        if (c.getVideos() != null)
+//            builder.videos(c.getVideos().stream().map(VideoDTO::fromVideo).toList());
+
+        return builder
                 .build();
     }
 }

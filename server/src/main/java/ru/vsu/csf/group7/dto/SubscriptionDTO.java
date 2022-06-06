@@ -1,16 +1,12 @@
 package ru.vsu.csf.group7.dto;
 
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.Subscription;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Data
 @Schema

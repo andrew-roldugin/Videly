@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import ru.vsu.csf.group7.controllers.interfaces.IChannelAPI;
 import ru.vsu.csf.group7.dto.ChannelDTO;
 import ru.vsu.csf.group7.entity.Channel;
+import ru.vsu.csf.group7.entity.Video;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
 import ru.vsu.csf.group7.http.request.CreateChannelRequest;
 import ru.vsu.csf.group7.http.request.SearchChannelQuery;
 import ru.vsu.csf.group7.http.request.UpdateChannelRequest;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.ChannelService;
+import ru.vsu.csf.group7.services.VideoService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 @Log4j2
 public class ChannelController implements IChannelAPI {
     private final ChannelService channelService;
+    private final VideoService videoService;
 
     @Override
     @PostMapping(value = "/createNew", produces = "application/json", consumes = "application/json")
@@ -49,9 +52,11 @@ public class ChannelController implements IChannelAPI {
 //    }
 
     @GetMapping(value = "/", produces = "application/json")
-    public ResponseEntity<Object> getBy(@RequestParam(value = "channelId", required = false, defaultValue = "") String channelId, @RequestParam(value = "userId", required = false) String userId) {
+    public ResponseEntity<Object> getBy(@RequestParam(value = "channelId", defaultValue = "") String channelId, @RequestParam(value = "userId") String userId) {
         try {
             Channel channel = !channelId.isEmpty() ? channelService.findByChannelId(channelId) : channelService.findByUserId(userId);
+//            List<Video> videos = videoService.getAllVideosOnChannel(channelId, 25, 0);
+//            channel.setVideos(videos);
             return ResponseEntity.ok(ChannelDTO.fromChannel(channel));
         } catch (NotFoundException | NullPointerException ex) {
             return ResponseEntity.notFound().build();

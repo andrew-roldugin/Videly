@@ -10,22 +10,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.csf.group7.controllers.interfaces.IUserAPI;
-import ru.vsu.csf.group7.dto.ChannelDTO;
 import ru.vsu.csf.group7.dto.UserDTO;
-import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.User;
-import ru.vsu.csf.group7.entity.UserDetailsImpl;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
-import ru.vsu.csf.group7.exceptions.UserNotFoundException;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
-import ru.vsu.csf.group7.http.response.AccountDetailsResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
 import ru.vsu.csf.group7.services.ChannelService;
 import ru.vsu.csf.group7.services.UserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -43,16 +37,17 @@ public class UserController implements IUserAPI {
     public ResponseEntity<Object> myAccount(Principal principal) {
         try {
             User userByEmail = userService.getUserData(principal.getName());
-            if (userByEmail != null) {
-                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), null);
-
-                Channel channel = userByEmail.getChannel();
-                if (channel != null) {
-                    response.setChannelInfo(ChannelDTO.fromChannel(channel));
-                }
-
-                return ResponseEntity.ok(response);
-            }
+//            if (userByEmail != null) {
+//                AccountDetailsResponse response = new AccountDetailsResponse(UserDTO.fromUser(userByEmail), null);
+//
+//                Channel channel = userByEmail.getChannel();
+//                if (channel != null) {
+//                    response.setChannelInfo(ChannelDTO.fromChannel(channel));
+//                }
+//
+//                return ResponseEntity.ok(response);
+//            }
+            return ResponseEntity.ok(UserDTO.fromUser(userByEmail));
         } catch (NotFoundException | NullPointerException e) {
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.NOT_FOUND);
         } catch (InterruptedException | ExecutionException e) {
@@ -64,17 +59,20 @@ public class UserController implements IUserAPI {
     @Override
     @PreAuthorize("#userId.equals(authentication.principal.id.toString())")
     @PatchMapping(value = "/{userId}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<MessageResponse> updateUser(
+    public ResponseEntity<Object> updateUser(
             @Parameter(description = "ID обновляемого пользователя", required = true) @PathVariable("userId") String userId,
             @Valid @RequestBody UpdateUserRequest req,
             BindingResult bindingResult
     ) {
         try {
-            userService.updateUserById(req, userId);
+            return ResponseEntity.ok(UserDTO.fromUser(userService.updateUserById(req, userId)));
         } catch (FirebaseAuthException e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getLocalizedMessage()));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(new MessageResponse("При обновлении учетной записи произошла ошибка"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok(new MessageResponse("Данные обновлены"));
+//        return ResponseEntity.ok(new MessageResponse("Данные обновлены"));
     }
 
 //    @PreAuthorize("#userId.equals(authentication.principal.id.toString()) or hasRole('ROLE_ADMIN')")

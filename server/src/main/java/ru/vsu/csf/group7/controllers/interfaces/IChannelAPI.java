@@ -19,8 +19,9 @@ import ru.vsu.csf.group7.http.response.MessageResponse;
 import javax.validation.Valid;
 
 @Tag(name = "ChannelController", description = "Модуль обработки каналов")
-@SecurityRequirement(name = "bearer_token")
+
 public interface IChannelAPI {
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Создание нового канала",
             responses = {
@@ -32,7 +33,6 @@ public interface IChannelAPI {
 //                                                   @Parameter(name = "avatarImg", description = "Файл-аватар канала") MultipartFile avatarImg,
 //                                                   @Parameter(name = "headerImg", description = "Файл-шапка канала") MultipartFile headerImg
     );
-
     @Operation(
             summary = "Загрузка данных о канале",
             responses = {
@@ -42,10 +42,9 @@ public interface IChannelAPI {
             },
             description = "Загрузка данных, когда пользователь переходит на какой-либо канал"
     )
-    ResponseEntity<Object> getBy(@Parameter(description = "ID канала", required = true) @PathVariable("channelId") String channelId,
+    ResponseEntity<Object> getBy(@Parameter(description = "ID канала") @PathVariable("channelId") String channelId,
                                  @Parameter(description = "ID пользователя", required = true) @PathVariable("userId") String userId
     );
-
     @Operation(
             summary = "Поиск канала",
             responses = {
@@ -57,6 +56,7 @@ public interface IChannelAPI {
     )
     ResponseEntity<Object> findByQuery(@Parameter(description = "Поисковый запрос") @Valid @RequestBody SearchChannelQuery query);
 
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Обновление данных канала",
             responses = {
@@ -73,6 +73,7 @@ public interface IChannelAPI {
 //            @RequestParam("headerImg") @Parameter(name = "headerImg", description = "Файл-шапка канала") MultipartFile headerImg
     );
 
+    @SecurityRequirement(name = "bearer_token")
     @Operation(
             summary = "Удаление канала",
             responses = {
@@ -85,4 +86,15 @@ public interface IChannelAPI {
             @Parameter(description = "ID удаляемого канала", required = true) @PathVariable("channelId") String channelId,
             @Parameter(description = "Полностью удалить данные о канале?") @RequestParam(value = "fullDelete", required = false, defaultValue = "false") boolean fullDelete
     );
+
+    @Operation(
+            summary = "Загрузить все каналы",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ChannelDTO.class)))),
+                    @ApiResponse(responseCode = "404", description = "Ничего не найдено", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+            }
+    )
+    ResponseEntity<Object> getAll();
+
 }

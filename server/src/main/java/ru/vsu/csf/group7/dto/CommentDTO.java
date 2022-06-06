@@ -7,7 +7,6 @@ import lombok.Data;
 import ru.vsu.csf.group7.entity.Comment;
 
 import javax.annotation.Nonnull;
-import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
 @Data

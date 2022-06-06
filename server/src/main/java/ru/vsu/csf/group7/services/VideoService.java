@@ -5,6 +5,7 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.vsu.csf.group7.entity.Channel;
 import ru.vsu.csf.group7.entity.Video;
 import ru.vsu.csf.group7.exceptions.NotFoundException;
 import ru.vsu.csf.group7.http.request.CreateVideoRequest;
@@ -14,6 +15,7 @@ import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 @Service
 public class VideoService {
@@ -86,9 +88,9 @@ public class VideoService {
         return videos;
     }
 
-    public List<Video> getAllVideosInChannel(String channelId, int limit, int offset) throws ExecutionException, InterruptedException {
+    public List<Video> getAllVideosOnChannel(String channelId, int limit, int offset) throws ExecutionException, InterruptedException {
         DocumentReference channelReference = channelService.getChannelReference(channelId);
-        if (!channelService.channelIsActive(channelReference, null))
+        if (!channelService.channelIsActive(channelReference, new Channel[1]))
             throw new NotFoundException("Канал не найден или удален");
 
         return channelReference
@@ -100,14 +102,14 @@ public class VideoService {
                 .getDocuments()
                 .stream()
                 .map(queryDocumentSnapshot -> ((DocumentReference) queryDocumentSnapshot.get("ref")))
-                .filter(Objects::nonNull)
+                //.filter(Objects::nonNull)
                 .map(ref -> {
                     try {
                         return ref.get().get().toObject(Video.class); // ссылка -> snapshot
-                    } catch (InterruptedException | ExecutionException ignored) {}
+                    } catch (Exception ignored) {
+                    }
                     return null;
-                })
-                .filter(Objects::nonNull)
+                }).filter(Objects::nonNull)
                 .toList();
     }
 

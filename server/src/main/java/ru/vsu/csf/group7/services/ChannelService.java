@@ -40,6 +40,7 @@ public class ChannelService {
 
         DocumentReference userRef = userService.getCurrentUserRef();
 
+        channel.setId(channelsReference.getId());
         channel.setUserRef(userRef);
 
         firestore.batch()

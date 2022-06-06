@@ -107,6 +107,24 @@ public class VideoController implements IVideoAPI {
     }
 
     @Override
+    @GetMapping(value = "/{channelId}/all", produces = "application/json")
+    public ResponseEntity<Object> loadVideosOnChannel(@PathVariable("channelId") String channelId, int limit, int offset) {
+        try {
+            List<Video> allVideosOnChannel = videoService.getAllVideosOnChannel(channelId, limit, offset);
+            List<VideoDTO> videos = allVideosOnChannel.stream()
+                    .map(VideoDTO::fromVideo)
+                    .toList();
+            return ResponseEntity.ok(videos);
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка"));
+        } catch (NullPointerException e) {
+            log.error(e.getLocalizedMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
     @PatchMapping(value = "/update/{videoId}", produces = {"application/json"}, consumes = "application/json")
     public ResponseEntity<Object> update(@PathVariable("videoId") String videoId, @RequestBody UpdateVideoRequest req) {
         try {

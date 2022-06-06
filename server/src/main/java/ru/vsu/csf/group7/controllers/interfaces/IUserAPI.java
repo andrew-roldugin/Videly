@@ -12,9 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.csf.group7.dto.UserDTO;
 import ru.vsu.csf.group7.http.request.UpdateUserRequest;
-import ru.vsu.csf.group7.http.response.AccountDetailsResponse;
 import ru.vsu.csf.group7.http.response.MessageResponse;
-import ru.vsu.csf.group7.http.response.MessageWithDataResponse;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -24,7 +22,7 @@ public interface IUserAPI {
     @Operation(
             summary = "Загрузка данных об аккаунте пользователя",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Данные загружены", content = @Content(schema = @Schema(implementation = AccountDetailsResponse.class))),
+                    @ApiResponse(responseCode = "200", description = "Данные загружены", content = @Content(schema = @Schema(implementation = UserDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
@@ -36,12 +34,13 @@ public interface IUserAPI {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Данные обновлены", content = @Content(schema = @Schema(implementation = UserDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Некорректные данные", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован"),
                     @ApiResponse(responseCode = "403", description = "Действие запрещено"),
                     @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
             }
     )
-    ResponseEntity<MessageResponse> updateUser(
+    ResponseEntity<Object> updateUser(
             @Parameter(description = "ID обновляемого пользователя", required = true) @PathVariable("userId") String userId,
             @Valid @RequestBody UpdateUserRequest req,
             BindingResult bindingResult

@@ -39,9 +39,11 @@ build/
 src/main/java/ru/vsu/csf/group7/config/MyTomcatConfiguration.java
 src/main/java/ru/vsu/csf/group7/config/CORS.java
 src/main/resources/serviceAccount.json
+#src/main/java/ru/vsu/csf/group7/config/HTTPS.java
 src/main/resources/VidelySrvKey.p12
 
 
 /src/main/resources/User.drawio
 /src/main/resources/swagger.json
 /src/main/resources/diagram.drawio
+/src/main/resources/package.drawio

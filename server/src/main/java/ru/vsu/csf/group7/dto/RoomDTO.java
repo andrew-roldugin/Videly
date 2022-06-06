@@ -1,10 +1,8 @@
 package ru.vsu.csf.group7.dto;
 
 
-import com.google.cloud.Timestamp;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import ru.vsu.csf.group7.entity.Video;
 
 import java.util.List;
 
