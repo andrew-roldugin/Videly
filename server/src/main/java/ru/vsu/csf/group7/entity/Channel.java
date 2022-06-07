@@ -57,6 +57,17 @@ public class Channel {
     }
 
     @Exclude
+    public boolean isOwner() {
+        User user = Objects.requireNonNull(getUser(), "Учетная запись не найдена");
+        try {
+            UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return user.getId().equals(principal.getId());
+        }catch (ClassCastException ignored){
+            return false;
+        }
+    }
+
+    @Exclude
     public boolean isActive() throws NullPointerException {
         Objects.requireNonNull(getUser(), "Учетная запись пользователя не найдена или удалена");
         return !this.isDeleted && user.userProfileIsActive();

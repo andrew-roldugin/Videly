@@ -19,6 +19,7 @@ public class ChannelDTO {
 //    private List<VideoDTO> videos;
     private boolean allowComments = true, allowRating = true;
     private boolean isDeleted = false;
+    private boolean canUploadVideo;
 
     public static ChannelDTO fromChannel(Channel c){
         Objects.requireNonNull(c, "Канал не найден или удален");
@@ -31,7 +32,8 @@ public class ChannelDTO {
                 .about(c.getAbout())
                 .isDeleted(c.isDeleted())
                 .allowComments(c.isAllowComments())
-                .allowRating(c.isAllowRating());
+                .allowRating(c.isAllowRating())
+                .canUploadVideo(c.isOwner());
 
 //        if (c.getVideos() != null)
 //            builder.videos(c.getVideos().stream().map(VideoDTO::fromVideo).toList());

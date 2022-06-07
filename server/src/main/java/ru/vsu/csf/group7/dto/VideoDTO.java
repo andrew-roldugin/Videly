@@ -26,7 +26,7 @@ public class VideoDTO {
     private String videoURL;
 //    private List<CommentDTO> comments;
     private ChannelDTO channel;
-    private boolean isVisible = true, isDeleted = false;
+    private boolean isVisible, isDeleted, canEdit;
     private Timestamp uploadTS;
 
     public static VideoDTO fromVideo(@NonNull Video v) {
@@ -39,10 +39,12 @@ public class VideoDTO {
                 .allowComments(v.isAllowComments())
                 .allowRating(v.isAllowRating())
                 .videoURL(v.getVideoURL())
+                .previewURL(v.getPreviewURL())
                 .isVisible(v.isVisible())
                 .isDeleted(v.isDeleted())
                 .uploadTS(v.getUploadTS())
                 .channel(ChannelDTO.fromChannel(v.getChannel()))
+                .canEdit(v.canEdit())
                 .build();
     }
 }

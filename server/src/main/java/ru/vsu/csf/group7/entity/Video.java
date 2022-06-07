@@ -59,4 +59,9 @@ public class Video {
         Objects.requireNonNull(getChannel(), "Канал не найден или удален");
         return !this.isDeleted && isVisible && this.channel.isActive();
     }
+
+    @Exclude
+    public boolean canEdit() {
+        return getChannel().isOwner();
+    }
 }
