@@ -33,4 +33,21 @@ class ChannelService {
       throw const FormatException("Невозможно обработать данные");
     }
   }
+
+  deleteChannel(String id) {
+    try {
+      return dioClient.patch("/channel/delete/$id").then(
+            (res) {
+          if (res.statusCode == 200) {
+            log("Канал успешно удален");
+            return res.data['messages'][0] as String;
+          }
+        },
+      );
+    } on SocketException catch (_) {
+      throw const SocketException("Вы не подключены к интеренету");
+    } on FormatException catch (_) {
+      throw const FormatException("Невозможно обработать данные");
+    }
+  }
 }

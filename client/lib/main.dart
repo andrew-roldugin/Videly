@@ -31,6 +31,8 @@ void main() async {
   };
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting("ru_RU");
   await Firebase.initializeApp();
 
   GetIt.instance

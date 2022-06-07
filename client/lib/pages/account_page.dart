@@ -117,9 +117,10 @@ class _AccountPageViewModel extends ChangeNotifier {
 
   void onRemoveButtonClick(BuildContext context) {
     onLogoutButtonClick(context);
-    if (user != null) {
-      _userService.deleteAccount(user!.id).then((value) {
-        onLogoutButtonClick(context);
+    if (user != null && user!.channel != null) {
+      _channelService.deleteChannel(user!.channel!.id!).then((value) {
+        MyBottomSheet.show(context, value!);
+        //onLogoutButtonClick(context);
       });
     }
   }
@@ -361,7 +362,7 @@ class _EditPasswordWidget extends StatelessWidget {
         fillColor: Colors.white,
         filled: true,
         prefixIcon: const Icon(Icons.account_circle),
-        hintText: "Пароль",
+        labelText: "Пароль",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -391,7 +392,7 @@ class _EditDescriptionWidget extends StatelessWidget {
         fillColor: Colors.white,
         filled: true,
         prefixIcon: const Icon(Icons.info_rounded),
-        hintText: "Описание канала",
+        labelText: "Описание канала",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -424,7 +425,7 @@ class _EditChannelNameWidget extends StatelessWidget {
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.account_circle),
-              hintText: "Название канала",
+              labelText: "Название канала",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

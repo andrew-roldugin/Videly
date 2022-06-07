@@ -47,24 +47,20 @@ class _VideoAppState extends State<VideoWidget> {
     return _controller.value.isInitialized
         ? AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
-            child: Stack(
-              alignment:  AlignmentDirectional.center,
-              children: [
-                VideoPlayer(_controller),
-                ControlButtonBar(controller: _controller),
+            child: Stack(alignment: AlignmentDirectional.center, children: [
+              VideoPlayer(_controller),
+              ControlButtonBar(controller: _controller),
             ]))
-        : Stack(
-          alignment:  AlignmentDirectional.center,
-          children: [
-          Image.asset(
-            AppImages.noVideoPreview,
-            scale: 2,
-          ),
-          const CircularProgressIndicator(
-            color: Colors.black,
-            strokeWidth: 3,
-          ),
-        ]);
+        : Stack(alignment: AlignmentDirectional.center, children: [
+            Image.asset(
+              AppImages.noVideoPreview,
+              scale: 2,
+            ),
+            const CircularProgressIndicator(
+              color: Colors.black,
+              strokeWidth: 3,
+            ),
+          ]);
   }
 
   @override
@@ -88,6 +84,7 @@ class _ControlButtonBarState extends State<ControlButtonBar> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ButtonBar(
           alignment: MainAxisAlignment.center,
@@ -96,19 +93,31 @@ class _ControlButtonBarState extends State<ControlButtonBar> {
               onPressed: () {
                 dispose();
               },
-              child: const Icon(Icons.skip_previous_rounded),
+              child: const Icon(
+                Icons.skip_previous_rounded,
+                color: Colors.grey,
+                size: 30,
+              ),
             ),
             MaterialButton(
               onPressed: onPlayButtonClick,
-              child: Icon(widget.controller.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow),
+              child: Icon(
+                widget.controller.value.isPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                color: Colors.grey,
+                size: 30,
+              ),
             ),
             MaterialButton(
               onPressed: () {
                 widget.controller.dispose();
               },
-              child: const Icon(Icons.skip_next_rounded),
+              child: const Icon(
+                Icons.skip_next_rounded,
+                color: Colors.grey,
+                size: 30,
+              ),
             )
           ],
         ),

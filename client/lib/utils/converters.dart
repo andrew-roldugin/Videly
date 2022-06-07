@@ -9,9 +9,9 @@ class DateTimeSerializer {
 
 extension DateTimeExtension on DateTime {
   String format([String pattern = 'dd/MM/yyyy', String? locale]) {
-    if (locale != null && locale.isNotEmpty) {
-      initializeDateFormatting(locale);
-    }
+    // if (locale != null && locale.isNotEmpty) {
+    //   initializeDateFormatting(locale);
+    // }
     return DateFormat(pattern, locale).format(this);
   }
 
