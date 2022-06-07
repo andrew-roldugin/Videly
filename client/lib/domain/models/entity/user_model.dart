@@ -1,5 +1,6 @@
 import 'package:client/domain/models/entity/channel_model.dart';
-import 'package:client/domain/models/entity/timestamp_converter.dart';
+import 'package:client/utils/converters.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,7 +14,7 @@ class UserModel {
   String email;
   String id;
 
-  @JsonKey(fromJson: DateTimeConverter.convert)
+  @JsonKey(fromJson: DateTimeSerializer.serialize)
   DateTime createdAt;
 
   bool banned, accountDeleted;

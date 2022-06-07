@@ -9,8 +9,8 @@ part of 'user_model.dart';
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       id: json['id'] as String,
       email: json['email'] as String,
-      createdAt:
-          DateTimeConverter.convert(json['createdAt'] as Map<String, dynamic>),
+      createdAt: DateTimeSerializer.serialize(
+          json['createdAt'] as Map<String, dynamic>),
       accountDeleted: json['accountDeleted'] as bool,
       role: $enumDecode(_$UserRoleEnumMap, json['role']),
       banned: json['banned'] as bool,

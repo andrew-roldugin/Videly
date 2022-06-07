@@ -42,7 +42,7 @@ class AuthService {
       return await dio.post("/auth/register", data: formData.toJson()).then(
         (res) {
           if (res.statusCode == 200) {
-            var token = res.data['tokens']['customToken'];
+            var token = res.data['customToken'];
             return token;
           }
         },

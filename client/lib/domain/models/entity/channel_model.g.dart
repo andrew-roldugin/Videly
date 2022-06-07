@@ -7,13 +7,13 @@ part of 'channel_model.dart';
 // **************************************************************************
 
 ChannelModel _$ChannelModelFromJson(Map<String, dynamic> json) => ChannelModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       name: json['name'] as String,
-      avatarURL: json['avatarURL'] as String,
-      headerURL: json['headerURL'] as String,
-      about: json['about'] as String,
-      createdAt:
-          DateTimeConverter.convert(json['createdAt'] as Map<String, dynamic>),
+      avatarURL: json['avatarURL'] as String?,
+      headerURL: json['headerURL'] as String?,
+      about: json['about'] as String?,
+      createdAt: DateTimeSerializer.serialize(
+          json['createdAt'] as Map<String, dynamic>),
       videos: (json['videos'] as List<dynamic>?)
           ?.map((e) => VideoModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -25,10 +25,10 @@ ChannelModel _$ChannelModelFromJson(Map<String, dynamic> json) => ChannelModel(
 Map<String, dynamic> _$ChannelModelToJson(ChannelModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
       'avatarURL': instance.avatarURL,
       'headerURL': instance.headerURL,
       'about': instance.about,
+      'name': instance.name,
       'createdAt': instance.createdAt.toIso8601String(),
       'videos': instance.videos?.map((e) => e.toJson()).toList(),
       'deleted': instance.deleted,

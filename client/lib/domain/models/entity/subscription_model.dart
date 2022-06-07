@@ -1,5 +1,4 @@
-import 'package:client/domain/models/entity/timestamp_converter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:client/utils/converters.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'channel_model.dart';
@@ -10,7 +9,7 @@ part 'subscription_model.g.dart';
 class SubscriptionModel {
   String id;
 
-  @JsonKey(fromJson: DateTimeConverter.convert)
+  @JsonKey(fromJson: DateTimeSerializer.serialize)
   DateTime followedSince;
   // @JsonKey(fromJson: ChannelModel.fromJson)
   ChannelModel channel;

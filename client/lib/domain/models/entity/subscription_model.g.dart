@@ -9,7 +9,7 @@ part of 'subscription_model.dart';
 SubscriptionModel _$SubscriptionModelFromJson(Map<String, dynamic> json) =>
     SubscriptionModel(
       id: json['id'] as String,
-      followedSince: DateTimeConverter.convert(
+      followedSince: DateTimeSerializer.serialize(
           json['followedSince'] as Map<String, dynamic>),
       channel: ChannelModel.fromJson(json['channel'] as Map<String, dynamic>),
     );

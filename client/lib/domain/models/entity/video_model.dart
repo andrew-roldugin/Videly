@@ -1,6 +1,5 @@
 import 'package:client/domain/models/entity/comment_model.dart';
-import 'package:client/domain/models/entity/timestamp_converter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:client/utils/converters.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'channel_model.dart';
@@ -14,7 +13,7 @@ class VideoModel{
   int likes, views;
   bool visible, deleted, allowComments, allowRating;
 
-  @JsonKey(fromJson: DateTimeConverter.convert)
+  @JsonKey(fromJson: DateTimeSerializer.serialize)
   DateTime uploadTS;
 
   // @JsonKey(fromJson: CommentModel.fromJson)

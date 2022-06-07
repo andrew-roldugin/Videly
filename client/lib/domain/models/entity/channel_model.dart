@@ -1,16 +1,14 @@
-import 'dart:convert';
-
-import 'package:client/domain/models/entity/timestamp_converter.dart';
+import 'package:client/utils/converters.dart';
 import 'package:client/domain/models/entity/video_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'channel_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ChannelModel{
-  String id, name, avatarURL, headerURL, about;
-  @JsonKey(fromJson: DateTimeConverter.convert)
+  String? id, avatarURL, headerURL, about;
+  String name;
+  @JsonKey(fromJson: DateTimeSerializer.serialize)
   DateTime createdAt;
 
   // @JsonKey(fromJson: VideoModel.fromJson)

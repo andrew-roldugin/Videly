@@ -8,7 +8,7 @@ part of 'history_model.dart';
 
 HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       video: VideoModel.fromJson(json['video'] as Map<String, dynamic>),
-      ts: DateTimeConverter.convert(json['ts'] as Map<String, dynamic>),
+      ts: DateTimeSerializer.serialize(json['ts'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>

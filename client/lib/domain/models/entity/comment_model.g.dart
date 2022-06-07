@@ -9,7 +9,7 @@ part of 'comment_model.dart';
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) => CommentModel(
       id: json['id'] as String,
       content: json['content'] as String,
-      ts: DateTimeConverter.convert(json['ts'] as Map<String, dynamic>),
+      ts: DateTimeSerializer.serialize(json['ts'] as Map<String, dynamic>),
       deleted: json['deleted'] as bool,
       channel: json['channelDTO'] == null
           ? null

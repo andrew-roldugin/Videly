@@ -74,7 +74,7 @@ class _AccountPageViewModel extends ChangeNotifier {
 
     if (channel != null && _editChannelRequest != null) {
       await _channelService
-          .editChannel(channel!.id, _editChannelRequest!)
+          .editChannel(channel!.id!, _editChannelRequest!)
           .then((value) {
         MyBottomSheet.show(context, value!);
         // _userRepository.user.channel = value;

@@ -1,7 +1,7 @@
+import 'package:client/domain/models/entity/video_model.dart';
 import 'package:client/widgets/video/comment_list_widget.dart';
 import 'package:client/widgets/video/video.dart';
 import 'package:client/widgets/video/video_description_widget.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class VideoPlaybackScreen extends StatefulWidget {
@@ -16,22 +16,18 @@ class VideoPlaybackScreen extends StatefulWidget {
 class _VideoPlaybackScreenState extends State<VideoPlaybackScreen> {
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print("_VideoPlaybackScreenState");
-    }
-
     return SafeArea(
       child: Scaffold(
         body: Column(
-          children: const [
-            VideoWidget(),
-            VideoDescriptionWidget(),
-            Padding(
+          children:  [
+            const VideoWidget(),
+            const VideoDescriptionWidget(video: null),
+            const Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Text("Комментарии"),
             ),
             Expanded(
-              child: CommentListWidget(),
+              child: CommentListWidget.create("POmq6G4M39ed1ffAjw1K"),
             )
           ],
         ),

@@ -1,5 +1,5 @@
-
-import 'package:client/domain/models/entity/timestamp_converter.dart';
+import 'package:client/utils/converters.dart';
+import 'package:client/utils/converters.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'channel_model.dart';
@@ -9,7 +9,7 @@ part 'comment_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class CommentModel {
   String id, content;
-  @JsonKey(fromJson: DateTimeConverter.convert)
+  @JsonKey(fromJson: DateTimeSerializer.serialize)
   DateTime ts;
   // @JsonKey(fromJson: ChannelModel.fromJson)
   @JsonKey(name: "channelDTO")

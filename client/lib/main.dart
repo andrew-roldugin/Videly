@@ -9,6 +9,7 @@ import 'package:client/screens/splash_screen.dart';
 import 'package:client/screens/video_playback_screen.dart';
 import 'package:client/services/auth_service.dart';
 import 'package:client/services/channel_service.dart';
+import 'package:client/services/comment_service.dart';
 import 'package:client/services/user_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
@@ -37,6 +39,8 @@ void main() async {
   GetIt.instance.registerSingleton<MyTabController>(MyTabController());
   GetIt.instance.registerSingleton<UserService>(UserService());
   GetIt.instance.registerSingleton<ChannelService>(ChannelService());
+  GetIt.instance.registerSingleton<CommentService>(CommentService());
+
   // await WidgetsFlutterBinding.ensureInitialized();
   // ByteData data = await
   // rootBundle.load('assets/raw/certificate.pem');
@@ -48,6 +52,8 @@ void main() async {
         return AppViewModel();
       },
       child: VidelyApp(routes: _routes));
+
+
 
   runApp(app);
 }

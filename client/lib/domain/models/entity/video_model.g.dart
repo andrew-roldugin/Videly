@@ -18,8 +18,8 @@ VideoModel _$VideoModelFromJson(Map<String, dynamic> json) => VideoModel(
       deleted: json['deleted'] as bool,
       allowComments: json['allowComments'] as bool,
       allowRating: json['allowRating'] as bool,
-      uploadTS:
-          DateTimeConverter.convert(json['uploadTS'] as Map<String, dynamic>),
+      uploadTS: DateTimeSerializer.serialize(
+          json['uploadTS'] as Map<String, dynamic>),
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => CommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),

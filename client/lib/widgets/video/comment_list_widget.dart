@@ -1,69 +1,169 @@
+import 'package:client/domain/models/entity/comment_model.dart';
+import 'package:client/services/comment_service.dart';
+import 'package:client/utils/converters.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
+class CommentListViewModel extends ChangeNotifier {
+  late bool isLoading = false;
+  late final _comments = <CommentModel>[];
+  late final CommentService commentService;
+
+  CommentListViewModel(String videoId) {
+    commentService = GetIt.I<CommentService>();
+    loadByVideoId(videoId);
+  }
+
+  void loadByVideoId(String videoId) async {
+    isLoading = true;
+    notifyListeners();
+
+    await commentService.loadAllCommentsAtVideo(videoId: videoId).then((value) {
+      _comments.addAll(value!);
+    });
+
+    isLoading = false;
+    notifyListeners();
+  }
+}
 
 class CommentListWidget extends StatelessWidget {
-  const CommentListWidget({Key? key}) : super(key: key);
+  final String videoId;
+
+  const CommentListWidget({Key? key, required this.videoId}) : super(key: key);
+
+  static Widget create(String videoId) {
+    return ChangeNotifierProvider(
+      create: (_) => CommentListViewModel(videoId),
+      child: CommentListWidget(videoId: videoId),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final model = context.watch<CommentListViewModel>();
+
+    if (model.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (model._comments.isEmpty) {
+      return const Center(child: Text("Пока нет комментариев"));
+    }
+
     return ListView.builder(
-      itemCount: 25,
-      itemBuilder: (BuildContext ctx, int index) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.black.withOpacity(0.2)),
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              )
-            ],
-          ),
-          clipBehavior: Clip.hardEdge,
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Icon(
+        itemCount: model._comments.length,
+        itemBuilder: (BuildContext ctx, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+            child: _CommentItem(comment: model._comments[index]),
+          );
+        });
+
+    // return Selector<CommentListViewModel, List<CommentModel>>(
+    //   selector: (context, model) {
+    //     model.loadByVideoId(videoId);
+    //     return model._comments;
+    //   },
+    //   shouldRebuild: (previous, next) => next.length != previous.length,
+    //   builder:  (context, comments, _) {
+    //     return ListView.builder(
+    //         itemCount: 25,
+    //         itemBuilder: (BuildContext ctx, int index) {
+    //       return _CommentItem(comment: comments[index]);
+    //     });
+    //   }
+    // );
+  }
+}
+
+class _CommentItem extends StatelessWidget {
+  final CommentModel comment;
+
+  const _CommentItem({Key? key, required this.comment}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black.withOpacity(0.2)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          )
+        ],
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Row(
+        children: [
+          comment.channel?.avatarURL != null
+              ? Image.network(
+                  comment.channel!.avatarURL!,
+                  width: 50,
+                )
+              : const Icon(
                   Icons.account_circle,
                   size: 50,
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Канал',
-                      style: Theme.of(context).textTheme.bodyText1,
+                      comment.channel!.name,
+                      style: Theme.of(context).textTheme.bodyText2,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
                     Text(
-                      "Дата подписки 15:00 04.06.2022",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      comment.ts
+                          .format(DateFormat.yMMMd("ru_RU").pattern!, "ru_RU"),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                        fontFamily: "Roboto",
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.italic,
+                        decoration: TextDecoration.none,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
-        );
-      },
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  comment.content,
+                  // overflow: TextOverflow.visible,
+                  // maxLines: 1,
+                  style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontFamily: "Roboto",
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.none),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
