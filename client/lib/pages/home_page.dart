@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
           Text("Главная"),
           MaterialButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(VideoPlaybackScreen.routeName);
+              Navigator.of(context).pushNamed(VideoPlaybackScreen.routeName, arguments: {"videoId": "wfrXnpOz7nVLxaYKimej"});
             },
             child: Text("vid page"),
           )

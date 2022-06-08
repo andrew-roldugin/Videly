@@ -1,7 +1,9 @@
 import 'package:client/app_view_model.dart';
 import 'package:client/controllers/tab_controller.dart';
 import 'package:client/http/custom_http_client.dart';
+import 'package:client/screens/channel_screen.dart';
 import 'package:client/screens/create_channel.dart';
+import 'package:client/screens/edit_video_screen.dart';
 import 'package:client/screens/main_screen.dart';
 import 'package:client/screens/signin_screen.dart';
 import 'package:client/screens/signup_screen.dart';
@@ -11,6 +13,7 @@ import 'package:client/services/auth_service.dart';
 import 'package:client/services/channel_service.dart';
 import 'package:client/services/comment_service.dart';
 import 'package:client/services/user_service.dart';
+import 'package:client/services/video_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,8 +29,10 @@ void main() async {
     SignUpScreen.routeName: (BuildContext context) => const SignUpScreen(),
     MainScreen.routeName: (BuildContext context) => const MainScreen(),
     CreateChannelScreen.routeName: (BuildContext context) => const CreateChannelScreen(),
-    VideoPlaybackScreen.routeName: (BuildContext context) =>
-        const VideoPlaybackScreen()
+    // VideoPlaybackScreen.routeName: (BuildContext context) =>
+    //     const VideoPlaybackScreen(),
+    // ChannelScreen.routeName: (BuildContext context) =>
+    // const ChannelScreen()
   };
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +47,7 @@ void main() async {
   GetIt.instance.registerSingleton<UserService>(UserService());
   GetIt.instance.registerSingleton<ChannelService>(ChannelService());
   GetIt.instance.registerSingleton<CommentService>(CommentService());
-
+  GetIt.instance.registerSingleton<VideoService>(VideoService());
   // await WidgetsFlutterBinding.ensureInitialized();
   // ByteData data = await
   // rootBundle.load('assets/raw/certificate.pem');
@@ -54,7 +59,6 @@ void main() async {
         return AppViewModel();
       },
       child: VidelyApp(routes: _routes));
-
 
 
   runApp(app);
@@ -73,6 +77,15 @@ class VidelyApp extends StatelessWidget {
       routes: routes,
       navigatorKey: _navigatorKey,
       initialRoute: SplashScreen.routeName,
+      onGenerateRoute: (settings) {
+        if(settings.name == ChannelScreen.routeName) {
+          return MaterialPageRoute(builder: (_) => ChannelScreen.create(channelId: (settings.arguments! as Map)['channelId']));
+        }else if(settings.name == VideoPlaybackScreen.routeName) {
+          return MaterialPageRoute(builder: (_) => VideoPlaybackScreen.create(videoId: (settings.arguments! as Map)['videoId']));
+        }else if(settings.name == EditVideoScreen.routeName) {
+          return MaterialPageRoute(builder: (_) => EditVideoScreen(videoId: (settings.arguments! as Map)['videoId']));
+        }
+      },
       title: "Videly",
       theme: ThemeData(
         primarySwatch: Colors.blue,

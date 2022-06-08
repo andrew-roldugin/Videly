@@ -1,4 +1,5 @@
 import 'package:client/domain/models/entity/comment_model.dart';
+import 'package:client/screens/channel_screen.dart';
 import 'package:client/services/comment_service.dart';
 import 'package:client/utils/converters.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,12 @@ class CommentListViewModel extends ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
+  }
+
+
+  void redirectToChannelScreen(BuildContext context, String channelId) {
+    Navigator.of(context).pushNamed(ChannelScreen.routeName,
+        arguments: {"channelId": channelId});
   }
 }
 
@@ -86,6 +93,7 @@ class _CommentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = context.read<CommentListViewModel>();
     return Container(
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
@@ -103,15 +111,37 @@ class _CommentItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: Row(
         children: [
-          comment.channel?.avatarURL != null
-              ? Image.network(
-                  comment.channel!.avatarURL!,
-                  width: 50,
-                )
-              : const Icon(
-                  Icons.account_circle,
-                  size: 50,
-                ),
+          GestureDetector(
+            // shape: const CircleBorder(side: BorderSide(width: 100)),
+            onTap: () {
+              model.redirectToChannelScreen(context, comment.channel!.id!);
+            },
+            child: comment.channel?.avatarURL != null &&
+                    comment.channel?.avatarURL?.isNotEmpty == true
+                ? CircleAvatar(
+                    backgroundImage: Image.network(
+                      comment.channel!.avatarURL!,
+                    ).image,
+                  )
+                : const Icon(
+                    Icons.account_circle,
+                    size: 50,
+                  ),
+            // ? Container(
+            //     decoration: const BoxDecoration(
+            //       borderRadius: BorderRadius.all(Radius.circular(50)),
+            //     ),
+            //     constraints: const BoxConstraints(
+            //       maxWidth: 50,
+            //     ),
+            //     clipBehavior: Clip.hardEdge,
+            //     child: Image.network(
+            //       comment.channel!.avatarURL!,
+            //       // width: 50,
+            //       // height: 50,
+            //     ),
+            //   )
+          ),
           const SizedBox(
             width: 10,
           ),
@@ -123,11 +153,14 @@ class _CommentItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      comment.channel!.name,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    GestureDetector(
+                      onTap: () => model.redirectToChannelScreen(context, comment.channel!.id!),
+                      child: Text(
+                        comment.channel!.name,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     Text(
                       comment.ts

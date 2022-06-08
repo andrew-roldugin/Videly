@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/adapter.dart';
@@ -35,10 +36,14 @@ class CustomHttpClient {
     _dio.options.baseUrl = "https://videly-server.herokuapp.com/api";
     _dio.options.responseType = ResponseType.json;
 
-    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler){
-      FirebaseAuth.instance.currentUser?.getIdToken().then((value) {
-        options.headers[HttpHeaders.authorizationHeader] =
-            "Bearer " + value.toString();
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
+      await FirebaseAuth.instance.currentUser?.getIdToken().then((value) {
+        if(value.isNotEmpty){
+          final token = "Bearer " + value.toString();
+          options.headers[HttpHeaders.authorizationHeader] = token;
+          log("В заголовки записан токен");
+          log("interceptor: token = $token");
+        }
       });
       handler.next(options);
     }));

@@ -9,16 +9,18 @@ part 'video_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class VideoModel{
 
-  String id, title, previewURL, description, videoURL;
-  int likes, views;
-  bool visible, deleted, allowComments, allowRating;
+  late String id, title, previewURL, description, videoURL;
+  late int likes, views;
+  late bool visible, deleted, allowComments, allowRating;
 
-  @JsonKey(fromJson: DateTimeSerializer.serialize)
-  DateTime uploadTS;
+   @JsonKey(fromJson: DateTimeSerializer.serialize)
+  late DateTime uploadTS;
 
   // @JsonKey(fromJson: CommentModel.fromJson)
-  List<CommentModel>? comments;
-  ChannelModel channel;
+  late List<CommentModel>? comments;
+  late ChannelModel channel;
+
+  late bool canEdit;
 
   VideoModel({
       required this.id,
@@ -34,7 +36,10 @@ class VideoModel{
       required this.allowRating,
       required this.uploadTS,
       this.comments,
+      required this.canEdit,
       required this.channel});
+
+  VideoModel.ctor();
 
   factory VideoModel.fromJson(Map<String, dynamic> json) =>
       _$VideoModelFromJson(json);

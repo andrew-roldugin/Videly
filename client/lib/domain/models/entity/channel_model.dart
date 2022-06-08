@@ -6,14 +6,14 @@ part 'channel_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ChannelModel{
-  String? id, avatarURL, headerURL, about;
-  String name;
+  late String? id, avatarURL, headerURL, about;
+  late String name;
   @JsonKey(fromJson: DateTimeSerializer.serialize)
-  DateTime createdAt;
+  late DateTime createdAt;
 
   // @JsonKey(fromJson: VideoModel.fromJson)
-  List<VideoModel>? videos;
-  bool deleted, allowComments, allowRating;
+  late List<VideoModel>? videos;
+  late bool deleted, allowComments, allowRating;
 
   ChannelModel({
       required this.id,
@@ -26,6 +26,8 @@ class ChannelModel{
       required this.deleted,
       required this.allowComments,
       required this.allowRating});
+
+  ChannelModel.ctor();
 
   factory ChannelModel.fromJson(Map<String, dynamic> json) =>
       _$ChannelModelFromJson(json);

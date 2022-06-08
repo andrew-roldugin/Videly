@@ -3,10 +3,8 @@ import 'package:client/domain/models/edit_channel_request.dart';
 import 'package:client/domain/models/edit_user_request.dart';
 import 'package:client/domain/models/entity/channel_model.dart';
 import 'package:client/domain/models/entity/user_model.dart';
-import 'package:client/http/api_exception.dart';
 import 'package:client/pages/error_page.dart';
 import 'package:client/repositories/user_repository.dart';
-import 'package:client/screens/create_channel.dart';
 import 'package:client/screens/splash_screen.dart';
 import 'package:client/services/auth_service.dart';
 import 'package:client/services/channel_service.dart';
@@ -23,7 +21,7 @@ class _AccountPageViewModel extends ChangeNotifier {
   final _channelService = GetIt.I<ChannelService>();
   final _userService = GetIt.I<UserService>();
 
-  late EditChannelRequest? _editChannelRequest = null;
+  late EditChannelRequest? _editChannelRequest;
   late final EditUserRequest? _editUserRequest = EditUserRequest(password: "");
   late final UserRepository _userRepository;
   String err = "";
@@ -39,6 +37,7 @@ class _AccountPageViewModel extends ChangeNotifier {
     _userRepository =
         Provider.of<AppViewModel>(ctx, listen: false).userRepository;
     asyncInit();
+    //onLogoutButtonClick(ctx);
   }
 
   void asyncInit() async {
@@ -53,7 +52,10 @@ class _AccountPageViewModel extends ChangeNotifier {
       }
     }).onError((error, stackTrace) {
       if (error is DioError) {
-        err = error.response?.data['messages'][0];
+        if(error.response?.statusCode == 401){
+          err = error.response?.data['login'] + '\n' + error.response?.data['password'];
+        }
+        // (error.response?.data as Map).forEach((key, value) {err += value;});
       } else {
         err = error.toString();
       }

@@ -1,3 +1,7 @@
+import 'package:client/domain/models/entity/channel_model.dart';
+import 'package:client/domain/models/entity/history_model.dart';
+import 'package:client/domain/models/entity/video_model.dart';
+import 'package:client/utils/converters.dart';
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -38,17 +42,97 @@ class _HistoryPageState extends State<HistoryPage> {
 }
 
 class _VideoList extends StatelessWidget {
-  const _VideoList({
+  _VideoList({
     Key? key,
   }) : super(key: key);
+
+  final history = <HistoryModel>[
+    HistoryModel(
+      video: VideoModel(
+        id: "id",
+        title: "Первое видео на канале",
+        previewURL: '',
+        description: "Тестовое видео для проверки работы плеера",
+        videoURL: "",
+        likes: 0,
+        views: 0,
+        visible: true,
+        deleted: false,
+        allowComments: true,
+        allowRating: true,
+        uploadTS: DateTime.now(),
+        canEdit: true,
+        channel: ChannelModel.ctor(),
+      ),
+      ts: DateTime.now(),
+    ),
+    HistoryModel(
+      video: VideoModel(
+        id: "id",
+        title: "Обзор Videly",
+        previewURL: '',
+        description: "Обзор возможностей приложения Videly",
+        videoURL: "",
+        likes: 0,
+        views: 0,
+        visible: true,
+        deleted: false,
+        allowComments: true,
+        allowRating: true,
+        uploadTS: DateTime.now(),
+        canEdit: true,
+        channel: ChannelModel.ctor(),
+      ),
+      ts: DateTime.now(),
+    ),
+    HistoryModel(
+      video: VideoModel(
+        id: "id",
+        title: "Виджеты во flutter",
+        previewURL: '',
+        description: "Обзор виджетов flutter. Stateless и Statefull. Методы. Жизненный цикл Statefull виджетов",
+        videoURL: "",
+        likes: 0,
+        views: 0,
+        visible: true,
+        deleted: false,
+        allowComments: true,
+        allowRating: true,
+        uploadTS: DateTime.now(),
+        canEdit: true,
+        channel: ChannelModel.ctor(),
+      ),
+      ts: DateTime.now(),
+    ),
+    HistoryModel(
+      video: VideoModel(
+        id: "id",
+        title: "Java Spring. Введение",
+        previewURL: '',
+        description: "Изучаем Java Spring. Часть 1",
+        videoURL: "",
+        likes: 0,
+        views: 0,
+        visible: true,
+        deleted: false,
+        allowComments: true,
+        allowRating: true,
+        uploadTS: DateTime.now(),
+        canEdit: true,
+        channel: ChannelModel.ctor(),
+      ),
+      ts: DateTime.now(),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 50),
-      itemCount: 10,
+      itemCount: history.length,
       itemExtent: 150,
       itemBuilder: (BuildContext context, int index) {
+        final item = history[index];
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
@@ -85,7 +169,7 @@ class _VideoList extends StatelessWidget {
                           height: 20,
                         ),
                         Text(
-                          'Название видео',
+                          item.video.title,
                           style: TextStyle(fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -94,7 +178,7 @@ class _VideoList extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          "15:00 04.06.2022",
+                          item.video.uploadTS.format(),
                           style: TextStyle(color: Colors.grey),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -104,7 +188,7 @@ class _VideoList extends StatelessWidget {
                         ),
                         Text(
                           //"Описание тестового видео",
-                          'dkladsmsalkdmklasmklcmwlekcndqwmimeclcsjlqneidcqwxm csaxml kdsmklaqwcl,,',
+                          item.video.description,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),

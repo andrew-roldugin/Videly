@@ -8,7 +8,7 @@ class DateTimeSerializer {
 }
 
 extension DateTimeExtension on DateTime {
-  String format([String pattern = 'dd/MM/yyyy', String? locale]) {
+  String format([String pattern = "yMMMEd", String? locale = "ru_RU"]) {
     // if (locale != null && locale.isNotEmpty) {
     //   initializeDateFormatting(locale);
     // }

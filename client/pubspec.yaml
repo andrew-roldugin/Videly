@@ -41,6 +41,7 @@ dependencies:
   mvc_pattern: ^7.0.0
   video_player: ^2.4.2
   toggle_switch: ^2.0.1
+  keyboard_attachable: ^2.1.0
   #spider: ^2.2.2
 
 
