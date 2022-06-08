@@ -29,3 +29,4 @@
 - [Яндекс-метрика приложения](https://appmetrica.yandex.ru/statistic?appId=4197262&report=audience&metrics=ym_u_activeUsers&sampling=1&tableRoot=date&chartType=line&sort=-ym%3Au%3Adate)
 - [Презентация](https://github.com/andrew-roldugin/Videly/blob/main/DOC/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F.pdf)
 - [Видео-презентация](https://drive.google.com/file/d/10SaYb_c8sGMDoWJ4JZjIrZA29EMBN0Fq/view?usp=sharing)
+- [Технический обзор](https://drive.google.com/file/d/1gqIstKemtI1ZtTaYpoou2_h0XUveQZl8/view?usp=sharing)
