@@ -95,8 +95,8 @@ public class VideoController implements IVideoAPI {
     @GetMapping(value = "/like", produces = "application/json")
     public ResponseEntity<Object> likeVideo(@RequestParam("videoId") String videoId) {
         try {
-            videoService.updateRating(videoId);
-            return ResponseEntity.ok(new MessageResponse("Успешно"));
+            int delta = videoService.updateRating(videoId);
+            return ResponseEntity.ok(delta);
         } catch (ExecutionException | InterruptedException e) {
             log.error(e.getLocalizedMessage());
             return ResponseEntity.internalServerError().body(new MessageResponse("Произошла неизвестная ошибка"));

@@ -62,7 +62,7 @@ public class Channel {
         try {
             UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return user.getId().equals(principal.getId());
-        }catch (ClassCastException ignored){
+        } catch (ClassCastException ignored){
             return false;
         }
     }

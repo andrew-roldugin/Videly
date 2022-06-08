@@ -45,6 +45,7 @@ public class VideoDTO {
                 .uploadTS(v.getUploadTS())
                 .channel(ChannelDTO.fromChannel(v.getChannel()))
                 .canEdit(v.canEdit())
+//                .alreadyRated(v.)
                 .build();
     }
 }

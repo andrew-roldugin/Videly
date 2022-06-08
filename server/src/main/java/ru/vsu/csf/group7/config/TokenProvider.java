@@ -66,6 +66,11 @@ public class TokenProvider {
 
     }
 
+    public String getUserIdFromToken(FirebaseToken firebaseToken) {
+        return firebaseToken.getUid();
+    }
+
+
     public String getUserLoginFromToken(FirebaseToken firebaseToken) {
         return firebaseToken.getEmail();
     }

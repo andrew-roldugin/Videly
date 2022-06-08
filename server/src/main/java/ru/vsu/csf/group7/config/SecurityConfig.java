@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().requiresChannel().anyRequest().requiresSecure()
                 .and().authorizeRequests().antMatchers(SecurityConstants.SIGN_UP_URLS).permitAll()
                 .antMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
-                .antMatchers("/api/comment/all", "/api/video/find", "/api/video/**").permitAll()
+                .antMatchers("/api/comment/all", "/api/video/find", "/api/video/:id").permitAll()
                 //.antMatchers("/api/test/**").permitAll()
                 .mvcMatchers(HttpMethod.GET,  "/api/channel/**").permitAll()
                 .anyRequest().authenticated()

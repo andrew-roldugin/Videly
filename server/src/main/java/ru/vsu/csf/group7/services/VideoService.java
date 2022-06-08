@@ -15,7 +15,6 @@ import ru.vsu.csf.group7.http.request.UpdateVideoRequest;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 @Service
 public class VideoService {
@@ -159,7 +158,7 @@ public class VideoService {
         return reference;
     }
 
-    public void updateRating(String videoId) throws ExecutionException, InterruptedException {
+    public int updateRating(String videoId) throws ExecutionException, InterruptedException {
         DocumentReference document = userService.getCurrentUserRef()
                 .collection("likes")
                 .document("user_likes");
@@ -176,8 +175,10 @@ public class VideoService {
         boolean v = Boolean.TRUE.equals(document.get().get().getBoolean(videoId));
 //        int likes = Integer.parseInt(videoReference.get().get().get("likes").toString());
 //        videoReference.update(Map.of("likes", likes + (!v ? 1 : -1)));
-        videoReference.update("likes", FieldValue.increment(!v ? 1 : -1));
+        int delta = !v ? 1 : -1;
+        videoReference.update("likes", FieldValue.increment(delta));
         document.set(Map.of(videoId, !v), SetOptions.merge());
+        return delta;
     }
 
     public boolean isVideoAvailable(@Nonnull DocumentReference reference) {

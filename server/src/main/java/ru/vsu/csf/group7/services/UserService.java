@@ -189,4 +189,19 @@ public class UserService {
         User user = mapToUser(userRef.get().get());
         return !(Objects.requireNonNull(user).isBanned() || user.isDeleted());
     }
+
+    public User findUserById(String id) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        User user = dbFirestore
+                .collection("users")
+                .document(id)
+                .get().get()
+                .toObject(User.class);
+
+        if (user == null || user.getId() == null)
+            throw new UserNotFoundException("id", id);
+
+        return user;
+    }
 }

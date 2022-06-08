@@ -39,8 +39,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = getJwtFromRequest(request);
             FirebaseToken firebaseToken;
             if (StringUtils.hasText(jwt) && (firebaseToken = provider.validateToken(jwt)) != null) {
-                String email = provider.getUserLoginFromToken(firebaseToken);
-                UserDetails userDetails = new UserDetailsImpl(service.findUserByEmail(email));
+                String id = provider.getUserIdFromToken(firebaseToken);
+                UserDetails userDetails = new UserDetailsImpl(service.findUserById(id));
 //                if (userDetails == null) return;
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
